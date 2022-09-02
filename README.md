@@ -45,3 +45,13 @@ $ npm run test:cov
 * Do not return a bare array as a Controller result. Always prefer to return an object with some property in it. This will make it much easier to add metadata if needed to these API responses.
 * Add a small documentation comment for each Service method.
 
+### Nest CLI tips
+* see [Command Overview](https://docs.nestjs.com/cli/overview#command-overview)
+* General CLI Commands
+```bash
+nest --help
+```
+* Specific CLI Commands, sub any command for 'generate' below
+```bash
+nest generate --help
+```

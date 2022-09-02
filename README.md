@@ -24,6 +24,8 @@
 
 ## Description
 
+This is a project meant to make card tracking, deck building, and general planning easier for the GBA game 'Yu-Gi-Oh! The Eternal Duelist Soul'. Code and tools being used include NestJS and MongoDB for the backend and Angular for the frontend. Why am I making this? For fun, of course!
+
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
 ## Installation

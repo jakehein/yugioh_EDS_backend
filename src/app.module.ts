@@ -1,6 +1,4 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
 import { DeckModule } from './deck/deck.module';
 import { CardModule } from './card/card.module';
@@ -17,7 +15,7 @@ import { SideDeckModule } from './side-deck/side-deck.module';
     AuthModule,
     SideDeckModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}

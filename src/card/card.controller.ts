@@ -1,9 +1,14 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Post } from '@nestjs/common';
 
 @Controller('card')
 export class CardController {
   @Get()
-  GetCardById(): Promise<null> {
+  async GetCardById(): Promise<null> {
+    return null;
+  }
+
+  @Post()
+  async AddCardToUser() {
     return null;
   }
 }

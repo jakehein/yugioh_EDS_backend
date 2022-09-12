@@ -1,14 +1,13 @@
-import { Controller, Get, Post } from '@nestjs/common';
+import { Controller, Get, Param } from '@nestjs/common';
+import { ICard } from './card.interface';
+import { CardService } from './card.service';
 
 @Controller('card')
 export class CardController {
-  @Get()
-  async GetCardById(): Promise<null> {
-    return null;
-  }
+  constructor(private readonly cardService: CardService) {}
 
-  @Post()
-  async AddCardToUser() {
-    return null;
+  @Get('id')
+  async GetCardById(@Param('cardId') cardId: string): Promise<ICard> {
+    return this.cardService.getCardById(cardId);
   }
 }

@@ -5,15 +5,17 @@ import { CardModule } from './card/card.module';
 import { BoosterPackModule } from './booster-pack/booster-pack.module';
 import { AuthModule } from './auth/auth.module';
 import { SideDeckModule } from './side-deck/side-deck.module';
+import { MongooseModule } from '@nestjs/mongoose';
 
 @Module({
   imports: [
-    UserModule,
-    DeckModule,
-    CardModule,
-    BoosterPackModule,
+    MongooseModule.forRoot('mongodb://localhost/nest'),
     AuthModule,
+    BoosterPackModule,
+    CardModule,
+    DeckModule,
     SideDeckModule,
+    UserModule,
   ],
   controllers: [],
   providers: [],

@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, ValidationPipe } from '@nestjs/common';
 import { UserModule } from './user/user.module';
 import { DeckModule } from './deck/deck.module';
 import { CardModule } from './card/card.module';
@@ -6,10 +6,17 @@ import { BoosterPackModule } from './booster-pack/booster-pack.module';
 import { AuthModule } from './auth/auth.module';
 import { SideDeckModule } from './side-deck/side-deck.module';
 import { ConfigModule } from './config/config.module';
+import { ExceptionCatchFilter } from './_util/filters/error-filter.filter';
+import { MaintenanceGuard } from './maintenance/maintenance.guard';
+import { FlushInterceptor } from './_util/interceptors/flush.interceptors';
+import { AppService } from './app.service';
+import { DatabaseModule } from './database/database.module';
 
 @Module({
   imports: [
     ConfigModule,
+    DatabaseModule,
+
     AuthModule,
     BoosterPackModule,
     CardModule,
@@ -18,6 +25,24 @@ import { ConfigModule } from './config/config.module';
     UserModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [
+    AppService,
+    {
+      provide: 'APP_FILTER',
+      useClass: ExceptionCatchFilter,
+    },
+    {
+      provide: 'APP_GUARD',
+      useClass: MaintenanceGuard,
+    },
+    {
+      provide: 'APP_INTERCEPTOR',
+      useClass: FlushInterceptor,
+    },
+    {
+      provide: 'APP_PIPE',
+      useClass: ValidationPipe,
+    },
+  ],
 })
 export class AppModule {}

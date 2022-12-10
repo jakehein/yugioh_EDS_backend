@@ -25,5 +25,43 @@ export class ContentAccessorService {
       boosterPacks: {},
       cards: {},
     };
+
+    const contentTypes = Object.keys(content) as (keyof IContent)[];
+
+    contentTypes.forEach((type) => {
+      content[type].forEach((item: ContentItem) => {
+        this.contentByTypeAndId[type][item.id] = item;
+      });
+    });
+  }
+
+  getContentData() {
+    return this.contentService.get();
+  }
+
+  getContentEntryByIdAndContentTypeOptional<K extends keyof IContent>(
+    type: K,
+    id: ContentEntry<K>['id'],
+  ): ContentEntry<K> | undefined {
+    if (!(id in this.contentByTypeAndId[type])) {
+      return undefined;
+    }
+
+    return this.contentByTypeAndId[type][id];
+  }
+
+  getAllContentEntriesByContentType<K extends keyof IContent>(
+    type: K,
+  ): ContentEntry<K>[] {
+    return Object.values<ContentEntry<K>>(this.contentByTypeAndId[type]);
+  }
+
+  getContentEntryByName<K extends keyof IContent>(
+    type: K,
+    name: ContentEntry<K>['name'],
+  ): ContentEntry<K> | undefined {
+    return this.getAllContentEntriesByContentType(type).find(
+      (item) => item.name === name,
+    );
   }
 }

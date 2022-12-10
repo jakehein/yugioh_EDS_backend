@@ -11,6 +11,7 @@ import { MaintenanceGuard } from './maintenance/maintenance.guard';
 import { FlushInterceptor } from './_util/interceptors/flush.interceptors';
 import { AppService } from './app.service';
 import { DatabaseModule } from './database/database.module';
+import { ContentModule } from './content/content.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { DatabaseModule } from './database/database.module';
     DeckModule,
     SideDeckModule,
     UserModule,
+    ContentModule,
   ],
   controllers: [],
   providers: [

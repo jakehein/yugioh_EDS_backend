@@ -1,8 +1,10 @@
-import { ICard } from 'src/card/card.interface';
+import * as t from 'io-ts';
 
 export interface IBoosterPack {
   id: string;
   name: string;
-  cards: ICard[];
+  cards: string[];
   isUnlocked: boolean;
 }
+
+export declare const boosterPackT: t.Type<IBoosterPack>;

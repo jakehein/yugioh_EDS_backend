@@ -1,14 +1,22 @@
+import * as t from 'io-ts';
+
 export enum CardType {
   Monster = 'Monster',
   Magic = 'Magic',
   Trap = 'Trap',
 }
+
+export declare const cardTypeEnumT: t.Type<CardType>;
+
 export enum Rarity {
   Common = 'Common',
   Uncommon = 'Uncommon',
   Rare = 'Rare',
   VeryRare = 'VeryRare',
 }
+
+export declare const rarityEnumT: t.Type<Rarity>;
+
 export enum Attribute {
   Dark = 'Dark',
   Earth = 'Earth',
@@ -17,6 +25,9 @@ export enum Attribute {
   Water = 'Water',
   Wind = 'Wind',
 }
+
+export declare const attributeEnumT: t.Type<Attribute>;
+
 export enum MonsterType {
   Aqua = 'Aqua',
   Beast = 'Beast',
@@ -42,6 +53,9 @@ export enum MonsterType {
   WingedBeast = 'Winged Beast',
   Zombie = 'Zombie',
 }
+
+export declare const monsterTypeEnumT: t.Type<MonsterType>;
+
 export interface ICard {
   id: string;
   name: string;
@@ -54,9 +68,11 @@ export interface ICard {
   isFlipEffect: boolean;
   password: string;
   effect: string;
-  attribute: Attribute | null;
-  monsterType: MonsterType | null;
-  stars: number | null;
-  attack: number | null;
-  defense: number | null;
+  attribute?: Attribute;
+  monsterType?: MonsterType;
+  stars?: number;
+  attack?: number;
+  defense?: number;
 }
+
+export declare const cardT: t.Type<ICard>;

@@ -6,7 +6,7 @@ import {
   UserDeck,
   UserSideDeck,
 } from '../user/user.schema';
-import { ContentData } from '../content/content.schema';
+//import { ContentData } from '../content/content.schema';
 
 export const MIKRO_ORM_CONFIG = Symbol('MIKRO_ORM_CONFIG');
 
@@ -19,7 +19,7 @@ function mikroOrmConfigFactory(
   );
 
   return {
-    entities: [User, UserBoosterPack, UserDeck, UserSideDeck, ContentData],
+    entities: [User, UserBoosterPack, UserDeck, UserSideDeck], //ContentData],
     dbName: process.env.NODE_ENV === 'production' ? 'yugioh' : 'yugiohtest',
     type: 'mongo',
     ensureIndexes: true,

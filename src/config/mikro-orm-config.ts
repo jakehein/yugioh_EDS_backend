@@ -14,10 +14,12 @@ function mikroOrmConfigFactory(
   configService: ConfigService,
 ): MikroOrmModuleOptions {
   const mongoUrl = configService.get<string>(
-    `mongodb+srv://${process.env.MONGO_USER_NAME}:${process.env.MONGO_USER_PASSWORD}@yugioh-eds.yjfb6fm.mongodb.net/?retryWrites=true&w=majority`,
+    'MONGO_URL',
     'mongodb://localhost:27017',
   );
   //console.log(process.env.MONGO_USER_NAME);
+  console.log(mongoUrl);
+  //console.log(process.env.MONGO_URL);
 
   return {
     entities: [User, UserBoosterPack, UserDeck, UserSideDeck], //ContentData],

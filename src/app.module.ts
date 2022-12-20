@@ -12,12 +12,12 @@ import { FlushInterceptor } from './_util/interceptors/flush.interceptors';
 import { AppService } from './app.service';
 import { DatabaseModule } from './database/database.module';
 import { ContentModule } from './content/content.module';
+import { AnalyticsModule } from './analytics/analytics.module';
 
 @Module({
   imports: [
     ConfigModule,
     DatabaseModule,
-
     AuthModule,
     BoosterPackModule,
     CardModule,
@@ -25,6 +25,7 @@ import { ContentModule } from './content/content.module';
     SideDeckModule,
     UserModule,
     ContentModule,
+    AnalyticsModule,
   ],
   controllers: [],
   providers: [

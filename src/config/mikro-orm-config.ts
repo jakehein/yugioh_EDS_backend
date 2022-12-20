@@ -2,10 +2,12 @@ import { ConfigService } from '@nestjs/config';
 import { MikroOrmModuleOptions } from '@mikro-orm/nestjs';
 import {
   User,
+  UserCard,
   UserBoosterPack,
   UserDeck,
   UserSideDeck,
 } from '../user/user.schema';
+import { BoosterPullRecord } from '../analytics/booster-pull-record.schema';
 
 export const MIKRO_ORM_CONFIG = Symbol('MIKRO_ORM_CONFIG');
 
@@ -18,7 +20,14 @@ function mikroOrmConfigFactory(
   );
 
   return {
-    entities: [User, UserBoosterPack, UserDeck, UserSideDeck],
+    entities: [
+      User,
+      UserCard,
+      UserBoosterPack,
+      UserDeck,
+      UserSideDeck,
+      BoosterPullRecord,
+    ],
     dbName: process.env.NODE_ENV === 'production' ? 'yugioh' : 'yugiohtest',
     type: 'mongo',
     ensureIndexes: true,

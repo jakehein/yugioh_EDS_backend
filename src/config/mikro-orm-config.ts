@@ -6,7 +6,6 @@ import {
   UserDeck,
   UserSideDeck,
 } from '../user/user.schema';
-//import { ContentData } from '../content/content.schema';
 
 export const MIKRO_ORM_CONFIG = Symbol('MIKRO_ORM_CONFIG');
 
@@ -16,14 +15,10 @@ function mikroOrmConfigFactory(
   const mongoUrl = configService.get<string>(
     'MONGO_URL',
     'mongodb://root:localdev@localhost:27017/',
-    //'mongodb://localhost:27017',
   );
-  //console.log(process.env.MONGO_USER_NAME);
-  console.log(mongoUrl);
-  //console.log(process.env.MONGO_URL);
 
   return {
-    entities: [User, UserBoosterPack, UserDeck, UserSideDeck], //ContentData],
+    entities: [User, UserBoosterPack, UserDeck, UserSideDeck],
     dbName: process.env.NODE_ENV === 'production' ? 'yugioh' : 'yugiohtest',
     type: 'mongo',
     ensureIndexes: true,

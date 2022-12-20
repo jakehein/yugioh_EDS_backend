@@ -6,41 +6,58 @@ import {
   Property,
   Unique,
 } from '@mikro-orm/core';
+import { ObjectId } from '@mikro-orm/mongodb';
+
+export type UserId = User['_id'];
+
+@Embeddable()
+export class UserCard {
+  @Property()
+  contentId: string;
+
+  constructor(cardId: string) {
+    this.contentId = cardId;
+  }
+}
 
 @Embeddable()
 export class UserDeck {
   @Property()
-  id: string;
+  contentId: string;
 
   constructor(deckId: string) {
-    this.id = deckId;
+    this.contentId = deckId;
   }
 }
 
 @Embeddable()
 export class UserSideDeck {
   @Property()
-  id: string;
+  contentId: string;
 
   constructor(deckSideId: string) {
-    this.id = deckSideId;
+    this.contentId = deckSideId;
   }
 }
 
 @Embeddable()
 export class UserBoosterPack {
   @Property()
-  id: string;
+  contentId: string;
 
   constructor(boosterPackId: string) {
-    this.id = boosterPackId;
+    this.contentId = boosterPackId;
   }
 }
 
 @Entity()
 export class User {
   @PrimaryKey()
-  _id!: string;
+  _id!: ObjectId;
+
+  @Property({ hidden: true })
+  @Unique()
+  firebaseUId: string;
 
   @Property()
   @Unique()
@@ -48,6 +65,12 @@ export class User {
 
   @Property()
   name: string;
+
+  @Property({ hidden: true })
+  authTime: number;
+
+  @Embedded(() => UserDeck, { object: true, array: true })
+  trunk: UserCard[] = [];
 
   @Embedded(() => UserDeck, { object: true, array: true })
   decks: UserDeck[] = [];
@@ -67,12 +90,20 @@ export class User {
   @Embedded(() => UserBoosterPack, { object: true, array: true })
   boostersCompleted: UserBoosterPack[] = [];
 
-  constructor(accountId: string) {
+  constructor(
+    firebaseUId: string,
+    accountId: string,
+    name: string,
+    authTime = 0,
+  ) {
+    this.firebaseUId = firebaseUId;
     this.accountId = accountId;
+    this.name = name;
+    this.authTime = authTime;
   }
 }
 
-// UserDeck, UserSideDeck, and UserBoosterPack are embedded into user, so they have no field actually referencing their owner
+// UserCard, UserDeck, UserSideDeck, and UserBoosterPack are embedded into user, so they have no field actually referencing their owner
 // this class wraps the models with such a reference
 // this is exclusively used together with casl.js so we can define rules based on the owner id
 abstract class WithOwner<TInner> {
@@ -85,6 +116,7 @@ abstract class WithOwner<TInner> {
   }
 }
 
+export class TrunkOfUser extends WithOwner<UserCard> {}
 export class DeckOfUser extends WithOwner<UserDeck> {}
 export class SideDeckOfUser extends WithOwner<UserSideDeck> {}
 export class BoosterPackOfUser extends WithOwner<UserBoosterPack> {}

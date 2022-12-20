@@ -14,11 +14,13 @@ $ npm install
 
 ### MongoDB
 
-To run this locally, you will need MongoDB 5.0 or higher. You can either install it directly, or via Docker (with `docker-compose` or Docker Desktop).
+To run this locally, you will need MongoDB 5.0 or higher. You can either install it directly, or via [Docker](https://www.docker.com/products/docker-desktop/).
 
 ```bash
-# docker-mongo setup command
-$ docker run --name mongo-ygo -p 27017:27017 -d mongo
+# Create and start containers
+$ docker compose up -d
+# Stop and remove containers
+$ docker compose down
 ```
 
 ## Running the app
@@ -52,7 +54,7 @@ The following values are required:
 The following values are optional:
 
 - `PORT` - set to the port you want to run the API on. Defaults to `3000`
-- `MONGO_URL` - set to the url of the MongoDB instance. If not set, defaults to `mongodb://localhost:27017/`
+- `MONGO_URL` - set to the url of the MongoDB instance. If not set, defaults to `mongodb://root:localdev@localhost:27017/`
 
 ## Test
 

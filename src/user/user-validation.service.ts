@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import _ from 'lodash';
 import { ContentAccessorService } from '../content/content-accessor.service';
-import { User } from 'src/user/user.schema';
+import { User } from '../user/user.schema';
 
 @Injectable()
 export class UsersValidationService {

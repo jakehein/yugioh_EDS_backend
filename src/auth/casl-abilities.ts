@@ -5,7 +5,7 @@ import {
   ExtractSubjectType,
   MongoAbility,
 } from '@casl/ability';
-import { User } from 'src/user/user.schema';
+import { User } from '../user/user.schema';
 import { ContentData } from '../content/content.schema';
 
 export type Actions =

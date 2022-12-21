@@ -69,7 +69,7 @@ export class User {
   @Property({ hidden: true })
   authTime: number;
 
-  @Embedded(() => UserDeck, { object: true, array: true })
+  @Embedded(() => UserCard, { object: true, array: true })
   trunk: UserCard[] = [];
 
   @Embedded(() => UserDeck, { object: true, array: true })

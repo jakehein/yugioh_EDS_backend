@@ -1,5 +1,5 @@
 import { ForbiddenException } from '@nestjs/common';
-import { User } from 'src/user/user.schema';
+import { User } from '../user/user.schema';
 import { AppAbility, defineAbilityFor } from './casl-abilities';
 
 export function throwUnlessAuthorized(

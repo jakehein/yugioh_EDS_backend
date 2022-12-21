@@ -6,7 +6,7 @@ import { Injectable } from '@nestjs/common';
 import { generateId } from 'zoo-ids';
 import { customAlphabet } from 'nanoid/async';
 import { User, UserId } from './user.schema';
-import assert from 'assert';
+import * as assert from 'assert';
 import { InjectRepository } from '@mikro-orm/nestjs';
 import { UsersValidationService } from '../user/user-validation.service';
 
@@ -20,11 +20,11 @@ export class UserExistsError extends Error {
 
 export async function generateAccountId() {
   const nanoid = customAlphabet('0123456789', 12);
-
+  console.log(nanoid);
   const baseString = await nanoid();
-
+  console.log(baseString);
   const m = /^(\d{4})(\d{4})(\d{4})$/i.exec(baseString);
-
+  console.log(m);
   assert(m);
 
   return `${m[1]}-${m[2]}-${m[3]}`;

@@ -15,6 +15,7 @@ import { ContentModule } from './content/content.module';
 import { AnalyticsModule } from './analytics/analytics.module';
 import { AccountModule } from './account/account.module';
 import { AppController } from './app.controller';
+import { UuidModule } from './uuid/uuid.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { AppController } from './app.controller';
     ContentModule,
     AnalyticsModule,
     AccountModule,
+    UuidModule,
   ],
   controllers: [AppController],
   providers: [

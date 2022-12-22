@@ -88,3 +88,7 @@ nest --help
 ```bash
 nest generate --help
 ```
+
+## Viewing Swagger
+
+The Swagger docs are loaded at `/api` when running the server.

@@ -15,7 +15,7 @@ import { Type } from 'class-transformer';
 
 /**
  * Creates compound Property Decorator for validation of functions/objects
- * nested in an array. See send-mail.dto and create-promo.dto
+ * nested in an array.
  * @param type the type of data being validated
  * @param isOptional defaulted false for determining if optional
  * @returns new custom PropertyDecoration rule

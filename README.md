@@ -42,14 +42,22 @@ I'm using Firebase for authentication. To set that up, [sign in here](https://co
 
 You will also need to make a service account. To do so, go to the Service accounts tab, and hit `Generate new private key`. This will give you a JSON file that you need for `FIREBASE_SERVICE_ACCOUNT_JSON` (see `Environment Variables`), but it will need to be slightly transformed first. The JSON needs to be minified (all newlines removed), and that can be done for example with a tool like [json minifier](https://codebeautify.org/jsonminifier) (although, a more secure alternative is preferred).
 
+To get the rest of the `FIREBASE` environment variables, add a Web App in the `Your apps` section of the General Tab of Project Settings. They should all be listed in the `firebaseConfig` object.
+
 ### Environment Variables
 
 Create a file called `.env.local` in the root of the project.
 
 The following values are required:
 
-- `FIREBASE_PROJECT_ID` - see `Setting Up Authentication`
 - `FIREBASE_SERVICE_ACCOUNT_JSON` - see `Setting Up Authentication`
+- `FIREBASE_WEB_API_KEY` - see `Setting Up Authentication`
+- `FIREBASE_AUTH_DOMAIN` - see `Setting Up Authentication`
+- `FIREBASE_PROJECT_ID` - see `Setting Up Authentication`
+- `FIREBASE_STORAGE_BUCKET` - see `Setting Up Authentication`
+- `FIREBASE_MESSAGING_SENDER_ID` - see `Setting Up Authentication`
+- `FIREBASE_APP_ID` - see `Setting Up Authentication`
+- `FIREBASE_MEASUREMENT_ID` - see `Setting Up Authentication`
 
 The following values are optional:
 

@@ -9,6 +9,14 @@ async function bootstrap() {
     .setTitle('Yu-Gi-Oh EDS')
     .setDescription('API for YGO Eternal Duelist Soul companion program')
     .setVersion('1.0.0')
+    .addBearerAuth({
+      type: 'http',
+      scheme: 'Bearer',
+      bearerFormat: 'Bearer',
+      name: 'Authorization',
+      description: 'access-token',
+      in: 'Header',
+    })
     .build();
 
   const document = SwaggerModule.createDocument(app, config);

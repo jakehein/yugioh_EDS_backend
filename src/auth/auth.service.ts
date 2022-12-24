@@ -8,7 +8,15 @@ import { UserService } from '../user/user.service';
 import { User } from '../user/user.schema';
 import { Auth, DecodedIdToken } from 'firebase-admin/auth';
 import { FirebaseError } from 'firebase-admin';
+import { FirebaseService } from '../firebase/firebase.service';
+import {
+  UserCredential,
+  createUserWithEmailAndPassword,
+  signInWithCustomToken,
+} from 'firebase/auth';
+import { CreateUserDto } from '../_util/dtos/createUser.dto';
 
+// move to own model file? Interface file?
 export interface UserResult {
   decodedToken: DecodedIdToken;
   user: User;
@@ -29,7 +37,45 @@ export class AuthService {
     private usersService: UserService,
     @Inject('FIREBASE_ADMIN_AUTH')
     private readonly firebaseAuth: Auth,
+    private firebaseService: FirebaseService,
   ) {}
+
+  async login(email: string, password: string): Promise<void> {
+    // firebase logic here
+    //signInWithCustomToken
+    // const userCredentials = await signInWithEmailAndPassword(
+    //   this.firebaseService.auth,
+    //   email,
+    //   password,
+    // );
+  }
+
+  async register(body: CreateUserDto): Promise<string> {
+    try {
+      const userCredential: UserCredential =
+        await createUserWithEmailAndPassword(
+          this.firebaseService.auth,
+          body.email,
+          body.password,
+        );
+
+      let jwt: string;
+
+      if (userCredential) {
+        const id: string = userCredential.user.uid;
+
+        console.log('test');
+        jwt = await this.firebaseAuth.createCustomToken(id);
+      }
+
+      if (!jwt) {
+        throw new Error('jwt is empty');
+      }
+      return jwt;
+    } catch (err) {
+      throw new BadRequestException(err);
+    }
+  }
 
   /**
    * Validate a user by their token (idToken).

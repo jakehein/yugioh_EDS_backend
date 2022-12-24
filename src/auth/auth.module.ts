@@ -8,6 +8,7 @@ import { AuthController } from './auth.controller';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { Auth, getAuth } from 'firebase-admin/auth';
 import { UserEmailRetrieverService } from './user-email-retriever.service';
+import { FirebaseService } from '../firebase/firebase.service';
 
 const firebaseFactory: FactoryProvider<App> = {
   provide: 'FIREBASE_ADMIN',
@@ -54,8 +55,14 @@ const firebaseAuthFactory: FactoryProvider<Auth> = {
     firebaseFactory,
     firebaseAuthFactory,
     UserEmailRetrieverService,
+    FirebaseService,
   ],
-  exports: [AuthService, 'FIREBASE_ADMIN_AUTH', UserEmailRetrieverService],
+  exports: [
+    AuthService,
+    'FIREBASE_ADMIN_AUTH',
+    UserEmailRetrieverService,
+    FirebaseService,
+  ],
   controllers: [AuthController],
 })
 export class AuthModule {}

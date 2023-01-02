@@ -9,9 +9,8 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
   //login controller?
   @Post('login')
-  //doublecheck 'User' probably is just login info for a user
   login(@Body() body: CreateUserDto) {
-    return this.authService.login(body.email, body.password);
+    return this.authService.login(body);
   }
 
   //register controller?

@@ -10,9 +10,11 @@ import { Auth, DecodedIdToken } from 'firebase-admin/auth';
 import { FirebaseError } from 'firebase-admin';
 import { FirebaseService } from '../firebase/firebase.service';
 import {
+  Auth as basicAuth,
   UserCredential,
   createUserWithEmailAndPassword,
   signInWithCustomToken,
+  signInWithEmailAndPassword,
 } from 'firebase/auth';
 import { CreateUserDto } from '../_util/dtos/createUser.dto';
 
@@ -40,31 +42,24 @@ export class AuthService {
     private firebaseService: FirebaseService,
   ) {}
 
-  async login(email: string, password: string): Promise<void> {
-    // firebase logic here
-    //signInWithCustomToken
-    // const userCredentials = await signInWithEmailAndPassword(
-    //   this.firebaseService.auth,
-    //   email,
-    //   password,
-    // );
-  }
-
-  async register(body: CreateUserDto): Promise<string> {
+  async getUserCredentials(
+    userCredentialsFunc: (
+      auth: basicAuth,
+      email: string,
+      password: string,
+    ) => Promise<UserCredential>,
+    body: CreateUserDto,
+  ): Promise<string> {
     try {
-      const userCredential: UserCredential =
-        await createUserWithEmailAndPassword(
-          this.firebaseService.auth,
-          body.email,
-          body.password,
-        );
-
+      const userCredential: UserCredential = await userCredentialsFunc(
+        this.firebaseService.auth,
+        body.email,
+        body.password,
+      );
       let jwt: string;
 
       if (userCredential) {
         const id: string = userCredential.user.uid;
-
-        console.log('test');
         jwt = await this.firebaseAuth.createCustomToken(id);
       }
 
@@ -75,6 +70,55 @@ export class AuthService {
     } catch (err) {
       throw new BadRequestException(err);
     }
+  }
+
+  async login(body: CreateUserDto): Promise<string> {
+    return this.getUserCredentials(signInWithEmailAndPassword, body);
+    // try {
+    //   const userCredential: UserCredential = await signInWithEmailAndPassword(
+    //     this.firebaseService.auth,
+    //     body.email,
+    //     body.password,
+    //   );
+    //   let jwt: string;
+
+    //   if (userCredential) {
+    //     const id: string = userCredential.user.uid;
+    //     jwt = await this.firebaseAuth.createCustomToken(id);
+    //   }
+
+    //   if (!jwt) {
+    //     throw new Error('jwt is empty');
+    //   }
+    // } catch (err) {
+    //   throw new BadRequestException(err);
+    // }
+  }
+
+  async register(body: CreateUserDto): Promise<string> {
+    return this.getUserCredentials(createUserWithEmailAndPassword, body);
+    // try {
+    //   const userCredential: UserCredential =
+    //     await createUserWithEmailAndPassword(
+    //       this.firebaseService.auth,
+    //       body.email,
+    //       body.password,
+    //     );
+
+    //   let jwt: string;
+
+    //   if (userCredential) {
+    //     const id: string = userCredential.user.uid;
+    //     jwt = await this.firebaseAuth.createCustomToken(id);
+    //   }
+
+    //   if (!jwt) {
+    //     throw new Error('jwt is empty');
+    //   }
+    //   return jwt;
+    // } catch (err) {
+    //   throw new BadRequestException(err);
+    // }
   }
 
   /**

@@ -63,9 +63,6 @@ export class AuthService {
         jwt = await this.firebaseAuth.createCustomToken(id);
       }
 
-      if (!jwt) {
-        throw new Error('jwt is empty');
-      }
       return jwt;
     } catch (err) {
       throw new BadRequestException(err);
@@ -74,63 +71,29 @@ export class AuthService {
 
   async login(body: CreateUserDto): Promise<string> {
     return this.getUserCredentials(signInWithEmailAndPassword, body);
-    // try {
-    //   const userCredential: UserCredential = await signInWithEmailAndPassword(
-    //     this.firebaseService.auth,
-    //     body.email,
-    //     body.password,
-    //   );
-    //   let jwt: string;
-
-    //   if (userCredential) {
-    //     const id: string = userCredential.user.uid;
-    //     jwt = await this.firebaseAuth.createCustomToken(id);
-    //   }
-
-    //   if (!jwt) {
-    //     throw new Error('jwt is empty');
-    //   }
-    // } catch (err) {
-    //   throw new BadRequestException(err);
-    // }
   }
 
   async register(body: CreateUserDto): Promise<string> {
     return this.getUserCredentials(createUserWithEmailAndPassword, body);
-    // try {
-    //   const userCredential: UserCredential =
-    //     await createUserWithEmailAndPassword(
-    //       this.firebaseService.auth,
-    //       body.email,
-    //       body.password,
-    //     );
-
-    //   let jwt: string;
-
-    //   if (userCredential) {
-    //     const id: string = userCredential.user.uid;
-    //     jwt = await this.firebaseAuth.createCustomToken(id);
-    //   }
-
-    //   if (!jwt) {
-    //     throw new Error('jwt is empty');
-    //   }
-    //   return jwt;
-    // } catch (err) {
-    //   throw new BadRequestException(err);
-    // }
   }
 
   /**
-   * Validate a user by their token (idToken).
+   * Validate a user by their token (customToken).
    *
-   * @param token the idToken to validate
+   * @param token the customToken to validate
    * @returns a UserResult if the token is valid, otherwise an error
    */
   async validateUserByToken(token: string): Promise<UserResult> {
-    let decodedToken;
+    let decodedToken: DecodedIdToken;
+    let validatedIdToken: string;
+    let userCredential: UserCredential;
     try {
-      decodedToken = await this.firebaseAuth.verifyIdToken(token);
+      userCredential = await signInWithCustomToken(
+        this.firebaseService.auth,
+        token,
+      );
+      validatedIdToken = await userCredential.user.getIdToken(true);
+      decodedToken = await this.firebaseAuth.verifyIdToken(validatedIdToken);
     } catch (err) {
       if (
         isFirebaseError(err) &&

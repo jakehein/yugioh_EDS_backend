@@ -20,11 +20,8 @@ export class UserExistsError extends Error {
 
 export async function generateAccountId() {
   const nanoid = customAlphabet('0123456789', 12);
-  console.log(nanoid);
   const baseString = await nanoid();
-  console.log(baseString);
   const m = /^(\d{4})(\d{4})(\d{4})$/i.exec(baseString);
-  console.log(m);
   assert(m);
 
   return `${m[1]}-${m[2]}-${m[3]}`;

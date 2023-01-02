@@ -15,10 +15,10 @@ export class AppController {
     private readonly accountService: AccountService,
   ) {}
 
-  @Get()
-  getHello(): string {
-    return this.appService.getHello();
-  }
+  // @Get()
+  // getHello(): string {
+  //   return this.appService.getHello();
+  // }
 
   @Get('me')
   @UseGuards(BearerAuthGuard)

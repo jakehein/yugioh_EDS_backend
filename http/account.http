@@ -1,22 +1,32 @@
 # @name login
 
-@firebaseWebApiKey = AIzaSyC8ieqSFpEiFv3s1CLoKcHZTRsIWhkJLLQ
-POST https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword
-  ?key={{firebaseWebApiKey}}
-Content-Type: application/json
+POST http://localhost:3000/auth/login HTTP/1.1
+content-type: application/json
 
 {
     "email": "a@example.com",
-    "password": "hello123",
-    "returnSecureToken": true
+    "password": "hello123"
 }
 
 ###
 
-@token = {{login.response.body.idToken}}
+# @name register
+
+POST http://localhost:3000/auth/register HTTP/1.1
+content-type: application/json
+
+{
+    "email": "registest@example.com",
+    "password": "hello123"
+}
+
+###
+
+@loginToken = {{login.response.body.jwt}}
+@registerToken = {{register.response.body.jwt}}
 
 # @name me
 GET http://localhost:3000/me HTTP/1.1
-Authorization: Bearer {{token}}
+Authorization: Bearer {{registerToken}}
 
 ###

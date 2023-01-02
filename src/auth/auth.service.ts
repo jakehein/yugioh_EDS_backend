@@ -69,12 +69,16 @@ export class AuthService {
     }
   }
 
-  async login(body: CreateUserDto): Promise<string> {
-    return this.getUserCredentials(signInWithEmailAndPassword, body);
+  async login(body: CreateUserDto): Promise<{ jwt: string }> {
+    return {
+      jwt: await this.getUserCredentials(signInWithEmailAndPassword, body),
+    };
   }
 
-  async register(body: CreateUserDto): Promise<string> {
-    return this.getUserCredentials(createUserWithEmailAndPassword, body);
+  async register(body: CreateUserDto): Promise<{ jwt: string }> {
+    return {
+      jwt: await this.getUserCredentials(createUserWithEmailAndPassword, body),
+    };
   }
 
   /**
@@ -88,6 +92,8 @@ export class AuthService {
     let validatedIdToken: string;
     let userCredential: UserCredential;
     try {
+      console.log(token);
+
       userCredential = await signInWithCustomToken(
         this.firebaseService.auth,
         token,

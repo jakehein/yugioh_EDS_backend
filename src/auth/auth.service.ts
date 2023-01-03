@@ -92,8 +92,6 @@ export class AuthService {
     let validatedIdToken: string;
     let userCredential: UserCredential;
     try {
-      console.log(token);
-
       userCredential = await signInWithCustomToken(
         this.firebaseService.auth,
         token,

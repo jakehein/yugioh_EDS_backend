@@ -27,6 +27,12 @@ content-type: application/json
 
 # @name me
 GET http://localhost:3000/me HTTP/1.1
+Authorization: Bearer {{loginToken}}
+
+###
+
+# @name me
+GET http://localhost:3000/me HTTP/1.1
 Authorization: Bearer {{registerToken}}
 
 ###

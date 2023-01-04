@@ -10,8 +10,10 @@ import { BearerAuthGuard } from '../auth/bearer-auth.guard';
 import { UseInterceptors } from '@nestjs/common';
 import { ContentInterceptor } from '../content-errors';
 import { throwUnlessAuthorized } from '../auth/casl-helper';
+import { ApiTags } from '@nestjs/swagger';
 
-@Controller(':userId/cards')
+@ApiTags('Cards')
+@Controller('user/:userId/cards')
 @UseGuards(BearerAuthGuard)
 @UseInterceptors(ContentInterceptor)
 export class CardController {
@@ -20,7 +22,7 @@ export class CardController {
     private readonly cardService: CardService,
   ) {}
 
-  @Get('id')
+  @Get(':cardId')
   async GetCardById(
     @RequestUser() requestingUser: User,
     @Param('userId') userId: string,

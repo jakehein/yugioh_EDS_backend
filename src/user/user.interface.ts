@@ -1,6 +1,6 @@
-import { IBoosterPack } from 'src/booster-pack/booster-pack.interface';
-import { IDeck } from 'src/deck/deck.interface';
-import { ISideDeck } from 'src/side-deck/side-deck.interfaces';
+import { IBoosterPack } from '../booster-pack/booster-pack.interface';
+import { IDeck } from '../deck/deck.interface';
+import { ISideDeck } from '../side-deck/side-deck.interfaces';
 
 export interface IUser {
   id: string;

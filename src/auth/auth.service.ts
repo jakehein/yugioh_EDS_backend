@@ -50,20 +50,21 @@ export class AuthService {
     ) => Promise<UserCredential>,
     body: CreateUserDto,
   ): Promise<string> {
+    let jwt: string;
     try {
       const userCredential: UserCredential = await userCredentialsFunc(
         this.firebaseService.auth,
         body.email,
         body.password,
       );
-      let jwt: string;
 
       if (userCredential) {
         const id: string = userCredential.user.uid;
         jwt = await this.firebaseAuth.createCustomToken(id);
+        return jwt;
+      } else {
+        throw new Error(`jwt could not be created for user ${body.email}`);
       }
-
-      return jwt;
     } catch (err) {
       throw new BadRequestException(err);
     }

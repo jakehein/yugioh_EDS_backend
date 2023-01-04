@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-types */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsEmail, Length } from 'class-validator';
 
@@ -10,13 +8,13 @@ export class CreateUserDto {
   })
   @IsNotEmpty()
   @IsEmail()
-  email: string;
+  email!: string;
 
   @ApiProperty({
     description: 'The password of the User',
     example: 'hello123',
   })
   @IsNotEmpty()
-  @Length(1, 10)
-  password: string;
+  @Length(6, 30)
+  password!: string;
 }

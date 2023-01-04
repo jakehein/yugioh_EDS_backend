@@ -5,7 +5,7 @@ import {
   SetMetadata,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { AuthenticatedRequest } from 'src/request.interface';
+import { AuthenticatedRequest } from '../request.interface';
 import { AppAbility, defineAbilityFor } from './casl-abilities';
 
 export type CaslAbilityHandler = (ability: AppAbility) => boolean;

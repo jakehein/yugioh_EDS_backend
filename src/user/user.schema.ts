@@ -23,21 +23,19 @@ export class UserCard {
 @Embeddable()
 export class UserDeck {
   @Property()
-  contentId: string;
+  deckId = '1';
 
-  constructor(deckId: string) {
-    this.contentId = deckId;
-  }
+  @Property({ nullable: true })
+  cards?: UserCard[];
 }
 
 @Embeddable()
 export class UserSideDeck {
   @Property()
-  contentId: string;
+  sideDeckId = '1';
 
-  constructor(deckSideId: string) {
-    this.contentId = deckSideId;
-  }
+  @Property({ nullable: true })
+  cards?: UserCard[];
 }
 
 @Embeddable()
@@ -78,11 +76,11 @@ export class User {
   @Embedded(() => UserSideDeck, { object: true, array: true })
   sideDecks: UserSideDeck[] = [];
 
-  @Embedded(() => UserDeck, { object: true, array: true, nullable: true })
-  currentDeck: UserDeck;
+  @Embedded(() => UserDeck, { object: true, array: true })
+  currentDeck: UserDeck = new UserDeck();
 
-  @Embedded(() => UserSideDeck, { object: true, array: true, nullable: true })
-  currentSideDeck: UserSideDeck;
+  @Embedded(() => UserSideDeck, { object: true, array: true })
+  currentSideDeck: UserSideDeck = new UserSideDeck();
 
   @Embedded(() => UserBoosterPack, { object: true, array: true })
   boostersAvailable: UserBoosterPack[] = [];

@@ -8,7 +8,7 @@ import {
 } from '@nestjs/common';
 
 import { Observable } from 'rxjs';
-import { handleError } from '../error-helpers';
+import { handleError } from './error-helpers';
 
 // TODO: use this skeleton to make meaningful error catching
 export class TestException extends Error {
@@ -20,7 +20,7 @@ export class TestException extends Error {
 export class GenericNotFoundException extends Error {}
 
 @Injectable()
-export class UserContentInterceptor implements NestInterceptor {
+export class ContentInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<unknown> {
     return next.handle().pipe(
       handleError(TestException, (err) => new BadRequestException(err.message)),

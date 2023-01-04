@@ -16,7 +16,6 @@ import { AnalyticsModule } from './analytics/analytics.module';
 import { AccountModule } from './account/account.module';
 import { AppController } from './app.controller';
 import { UuidModule } from './uuid/uuid.module';
-import { UserContentModule } from './user-content/user-content.module';
 
 @Module({
   imports: [
@@ -32,7 +31,6 @@ import { UserContentModule } from './user-content/user-content.module';
     AnalyticsModule,
     AccountModule,
     UuidModule,
-    UserContentModule,
   ],
   controllers: [AppController],
   providers: [

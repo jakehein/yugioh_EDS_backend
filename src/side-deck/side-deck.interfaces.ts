@@ -1,4 +1,4 @@
-import { ICard } from 'src/card/card.interface';
+import { ICard } from '../card/card.interface';
 
 export interface ISideDeck {
   id: string;

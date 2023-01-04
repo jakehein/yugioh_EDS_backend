@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { ICard } from './card.interface';
+import { User } from '../user/user.schema';
 
 @Injectable()
 export class CardService {
-  getCardById(cardId: string): ICard {
+  getCard(user: User, cardId: string): ICard | null {
     return null;
   }
 }

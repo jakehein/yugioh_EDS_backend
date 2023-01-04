@@ -1,8 +1,7 @@
 import { Controller, Get, Param } from '@nestjs/common';
-import { ICard } from './card.interface';
 import { CardService } from './card.service';
 import { RequestUser } from '../request-user.decorator';
-import { TrunkOfUser, User } from '../user/user.schema';
+import { TrunkOfUser, User, UserCard } from '../user/user.schema';
 import { UserService } from '../user/user.service';
 import { ObjectId } from '@mikro-orm/mongodb';
 import { UseGuards } from '@nestjs/common';
@@ -27,7 +26,7 @@ export class CardController {
     @RequestUser() requestingUser: User,
     @Param('userId') userId: string,
     @Param('cardId') cardId: string,
-  ): Promise<{ card: ICard }> {
+  ): Promise<{ card: UserCard }> {
     const user = await this.userService.findByIdOrFail(new ObjectId(userId));
 
     if (user.trunk) {

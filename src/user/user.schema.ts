@@ -13,13 +13,21 @@ export type UserId = User['_id'];
 @Embeddable()
 export class UserCard {
   @Property()
+  id: string;
+
+  @Property()
   contentId: string;
 
-  constructor(cardId: string) {
+  @Property()
+  copies = 1;
+
+  constructor(id: string, cardId: string) {
+    this.id = id;
     this.contentId = cardId;
   }
 }
 
+//TODO: Need to probably have an id on this?
 @Embeddable()
 export class UserDeck {
   @Property()
@@ -29,6 +37,7 @@ export class UserDeck {
   cards?: UserCard[];
 }
 
+//TODO: Need to probably have an id on this?
 @Embeddable()
 export class UserSideDeck {
   @Property()
@@ -41,9 +50,13 @@ export class UserSideDeck {
 @Embeddable()
 export class UserBoosterPack {
   @Property()
+  id: string;
+
+  @Property()
   contentId: string;
 
-  constructor(boosterPackId: string) {
+  constructor(id: string, boosterPackId: string) {
+    this.id = id;
     this.contentId = boosterPackId;
   }
 }

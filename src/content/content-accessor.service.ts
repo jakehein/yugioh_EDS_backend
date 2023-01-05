@@ -64,4 +64,10 @@ export class ContentAccessorService {
       (item) => item.name === name,
     );
   }
+
+  getAllContentCardsByPasscode(passcode: string): ContentEntry<'cards'>[] {
+    return this.getAllContentEntriesByContentType('cards').filter(
+      (card) => card.passcode === passcode,
+    );
+  }
 }

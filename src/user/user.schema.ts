@@ -7,6 +7,7 @@ import {
   Unique,
 } from '@mikro-orm/core';
 import { ObjectId } from '@mikro-orm/mongodb';
+import { BoosterPack } from '../card/card.interface';
 
 export type UserId = User['_id'];
 
@@ -55,9 +56,25 @@ export class UserBoosterPack {
   @Property()
   contentId: string;
 
+  @Property()
+  isUnlocked = false;
+
   constructor(id: string, boosterPackId: string) {
     this.id = id;
     this.contentId = boosterPackId;
+
+    switch (boosterPackId) {
+      case BoosterPack.DarkMagician:
+      case BoosterPack.MysticalElf:
+      case BoosterPack.RedEyesBDragon:
+      case BoosterPack.weeklyYuGiOh1:
+      case BoosterPack.weeklyYuGiOh2:
+      case BoosterPack.Magazine:
+      case BoosterPack.GrandpaCupQualifying:
+      case BoosterPack.GrandpaCupFinal:
+        this.isUnlocked = true;
+        break;
+    }
   }
 }
 
@@ -106,11 +123,17 @@ export class User {
     accountId: string,
     name: string,
     authTime = 0,
+    boosters: { uuid: string; contentId: string }[],
   ) {
     this.firebaseUId = firebaseUId;
     this.accountId = accountId;
     this.name = name;
     this.authTime = authTime;
+    boosters.forEach((booster: { uuid: string; contentId: string }) =>
+      this.boostersAvailable.push(
+        new UserBoosterPack(booster.uuid, booster.contentId),
+      ),
+    );
   }
 }
 

@@ -17,6 +17,10 @@ export class AccountService {
       firebaseUId: user.firebaseUId,
       accountId: user.accountId,
       name: user.name,
+      boostersAvailable: user.boostersAvailable.filter(
+        (booster) => booster.isUnlocked,
+      ),
+      boostersCompleted: user.boostersCompleted,
     };
 
     return userData;

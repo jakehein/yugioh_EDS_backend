@@ -9,6 +9,8 @@ import { User, UserId } from './user.schema';
 import * as assert from 'assert';
 import { InjectRepository } from '@mikro-orm/nestjs';
 import { UsersValidationService } from '../user/user-validation.service';
+import { BoosterPack } from '../card/card.interface';
+import { UuidService } from '../uuid/uuid.service';
 
 export class UserExistsError extends Error {
   constructor(public firebaseUId: string) {
@@ -33,6 +35,7 @@ export class UserService {
     @InjectRepository(User)
     private readonly userRepository: EntityRepository<User>,
     private readonly usersValidationService: UsersValidationService,
+    private readonly uuidService: UuidService,
   ) {}
 
   async createFromFirebase(
@@ -41,7 +44,15 @@ export class UserService {
   ): Promise<User> {
     const accountId = await generateAccountId();
     const name = generateId();
-    const user = new User(firebaseUId, accountId, name, authTime);
+    //const boosterIds = Object.values(BoosterPack);
+    const boosters: { uuid: string; contentId: string }[] = [];
+    Object.values(BoosterPack).forEach((boosterPack) => {
+      boosters.push({
+        uuid: this.uuidService.getUuid(),
+        contentId: boosterPack,
+      });
+    });
+    const user = new User(firebaseUId, accountId, name, authTime, boosters);
     try {
       await this.userRepository.persistAndFlush(user);
       return user;

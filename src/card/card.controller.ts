@@ -5,9 +5,9 @@ import { TrunkOfUser, User, UserCard } from '../user/user.schema';
 import { UserService } from '../user/user.service';
 import { ObjectId } from '@mikro-orm/mongodb';
 import { throwUnlessAuthorized } from '../auth/casl-helper';
-import { ControllerDecorator } from '../_util/decorators/compoundDecorators';
+import { CommonGuardedControllerDecorator } from '../_util/decorators/compoundDecorators';
 
-@ControllerDecorator('Cards', 'user/:userId/cards')
+@CommonGuardedControllerDecorator('Cards', 'user/:userId/cards')
 export class CardController {
   constructor(
     private readonly userService: UserService,

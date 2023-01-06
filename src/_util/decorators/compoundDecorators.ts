@@ -94,14 +94,20 @@ export function IntApiDecorator(isOptional = false): PropertyDecorator {
   );
 }
 
-export function ControllerDecorator(
+export function ApiControllerHeader(
+  swaggerTag: string,
+  controllerPath = '',
+): ClassDecorator & MethodDecorator {
+  return applyDecorators(ApiTags(swaggerTag), Controller(controllerPath));
+}
+
+export function CommonGuardedControllerDecorator(
   swaggerTag: string,
   controllerPath = '',
 ): ClassDecorator & MethodDecorator {
   return applyDecorators(
-    ApiTags(swaggerTag),
+    ApiControllerHeader(swaggerTag, controllerPath),
     ApiBearerAuth(),
-    Controller(controllerPath),
     UseGuards(BearerAuthGuard),
     UseInterceptors(ContentInterceptor),
   );

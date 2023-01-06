@@ -3,9 +3,9 @@ import { AccountService } from './account/account.service';
 import { AppService } from './app.service';
 import { RequestUser } from './request-user.decorator';
 import { User } from './user/user.schema';
-import { ControllerDecorator } from './_util/decorators/compoundDecorators';
+import { CommonGuardedControllerDecorator } from './_util/decorators/compoundDecorators';
 
-@ControllerDecorator('App Controls')
+@CommonGuardedControllerDecorator('App Controls')
 export class AppController {
   constructor(
     private readonly appService: AppService,

@@ -9,9 +9,14 @@ import {
   IsOptional,
   IsInt,
 } from 'class-validator';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiProperty, ApiTags } from '@nestjs/swagger';
 import { applyDecorators } from '@nestjs/common';
 import { Type } from 'class-transformer';
+import { Controller } from '@nestjs/common';
+import { UseGuards } from '@nestjs/common';
+import { BearerAuthGuard } from '../../auth/bearer-auth.guard';
+import { UseInterceptors } from '@nestjs/common';
+import { ContentInterceptor } from '../../content-errors';
 
 /**
  * Creates compound Property Decorator for validation of functions/objects
@@ -86,5 +91,18 @@ export function IntApiDecorator(isOptional = false): PropertyDecorator {
     IsInt(),
     ApiProperty({ required: !isOptional }),
     ...(isOptional ? [IsOptional()] : []),
+  );
+}
+
+export function ControllerDecorator(
+  swaggerTag: string,
+  controllerPath = '',
+): ClassDecorator & MethodDecorator {
+  return applyDecorators(
+    ApiTags(swaggerTag),
+    ApiBearerAuth(),
+    Controller(controllerPath),
+    UseGuards(BearerAuthGuard),
+    UseInterceptors(ContentInterceptor),
   );
 }

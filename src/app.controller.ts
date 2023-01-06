@@ -1,14 +1,11 @@
-import { Controller, Get, UseGuards } from '@nestjs/common';
+import { Get } from '@nestjs/common';
 import { AccountService } from './account/account.service';
 import { AppService } from './app.service';
-import { BearerAuthGuard } from './auth/bearer-auth.guard';
 import { RequestUser } from './request-user.decorator';
 import { User } from './user/user.schema';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ControllerDecorator } from './_util/decorators/compoundDecorators';
 
-@ApiBearerAuth()
-@ApiTags('App Controls')
-@Controller()
+@ControllerDecorator('App Controls')
 export class AppController {
   constructor(
     private readonly appService: AppService,
@@ -21,7 +18,7 @@ export class AppController {
   // }
 
   @Get('me')
-  @UseGuards(BearerAuthGuard)
+  //@UseGuards(BearerAuthGuard)
   getUser(@RequestUser() user: User) {
     return { account: this.accountService.getMainAccountInformationFor(user) };
   }

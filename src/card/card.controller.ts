@@ -1,20 +1,13 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Get, Param } from '@nestjs/common';
 import { CardService } from './card.service';
 import { RequestUser } from '../request-user.decorator';
 import { TrunkOfUser, User, UserCard } from '../user/user.schema';
 import { UserService } from '../user/user.service';
 import { ObjectId } from '@mikro-orm/mongodb';
-import { UseGuards } from '@nestjs/common';
-import { BearerAuthGuard } from '../auth/bearer-auth.guard';
-import { UseInterceptors } from '@nestjs/common';
-import { ContentInterceptor } from '../content-errors';
 import { throwUnlessAuthorized } from '../auth/casl-helper';
-import { ApiTags } from '@nestjs/swagger';
+import { ControllerDecorator } from '../_util/decorators/compoundDecorators';
 
-@ApiTags('Cards')
-@Controller('user/:userId/cards')
-@UseGuards(BearerAuthGuard)
-@UseInterceptors(ContentInterceptor)
+@ControllerDecorator('Cards', 'user/:userId/cards')
 export class CardController {
   constructor(
     private readonly userService: UserService,
@@ -43,5 +36,24 @@ export class CardController {
     }
 
     return { card };
+  }
+
+  @Get()
+  async GetTrunk(
+    @RequestUser() requestingUser: User,
+    @Param('userId') userId: string,
+  ): Promise<{ trunk: UserCard[] }> {
+    const user = await this.userService.findByIdOrFail(new ObjectId(userId));
+
+    if (user.trunk) {
+      throwUnlessAuthorized(requestingUser, (ability) =>
+        user.trunk.every((card) =>
+          ability.can('read', new TrunkOfUser(card, new ObjectId(userId))),
+        ),
+      );
+    }
+
+    const trunk = this.cardService.getTrunk(user);
+    return { trunk };
   }
 }

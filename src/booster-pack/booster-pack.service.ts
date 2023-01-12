@@ -4,12 +4,14 @@ import { User, UserBoosterPack, UserCard } from '../user/user.schema';
 import { BoosterPack, ICard } from '../card/card.interface';
 import { UuidService } from '../uuid/uuid.service';
 import { IBoosterPack } from './booster-pack.interface';
+import { CardService } from '../card/card.service';
 
 @Injectable()
 export class BoosterPackService {
   constructor(
     private readonly uuidService: UuidService,
     private readonly contentAccessorService: ContentAccessorService,
+    private readonly cardService: CardService,
   ) {}
 
   getAvailableBoosters(user: User): UserBoosterPack[] {
@@ -58,10 +60,9 @@ export class BoosterPackService {
     cardIds.forEach((x) => {
       if (!boosterPack.cardIds.includes(x))
         throw new Error('card does not exist in boosterPack');
-      userCards.push(new UserCard(this.uuidService.getUuid(), x));
+      userCards.push(this.cardService.addToTrunk(user, x));
     });
 
-    user.trunk.push(...userCards);
     return userCards;
   }
 }

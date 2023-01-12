@@ -6,6 +6,7 @@ import { UserService } from '../user/user.service';
 import { ObjectId } from '@mikro-orm/mongodb';
 import { throwUnlessAuthorized } from '../auth/casl-helper';
 import { CommonGuardedControllerDecorator } from '../_util/decorators/compoundDecorators';
+import { ICard } from './card.interface';
 
 @CommonGuardedControllerDecorator('Cards', 'user/:userId/cards')
 export class CardController {
@@ -20,17 +21,13 @@ export class CardController {
     @Param('userId') userId: string,
     @Param('cardId') cardId: string,
   ): Promise<{ card: UserCard }> {
-    const user = await this.userService.findByIdOrFail(new ObjectId(userId));
+    const user = await this.ensureCanReadOrUpdateTrunkForUser(
+      requestingUser,
+      userId,
+      'read',
+    );
 
-    if (user.trunk) {
-      throwUnlessAuthorized(requestingUser, (ability) =>
-        user.trunk.every((card) =>
-          ability.can('read', new TrunkOfUser(card, new ObjectId(userId))),
-        ),
-      );
-    }
-
-    const card = this.cardService.getCard(user, cardId);
+    const card = this.cardService.getCardFromTrunk(user, cardId);
     if (!card) {
       throw Error('placeholder error');
     }
@@ -38,22 +35,50 @@ export class CardController {
     return { card };
   }
 
+  @Get(':cardId/card-content')
+  async GetCardContent(
+    @RequestUser() requestingUser: User,
+    @Param('userId') userId: string,
+    @Param('cardId') cardId: string,
+  ): Promise<{ card: ICard }> {
+    await this.ensureCanReadOrUpdateTrunkForUser(
+      requestingUser,
+      userId,
+      'read',
+    );
+
+    return { card: this.cardService.getCardContent(cardId) };
+  }
+
   @Get()
   async GetTrunk(
     @RequestUser() requestingUser: User,
     @Param('userId') userId: string,
   ): Promise<{ trunk: UserCard[] }> {
+    const user = await this.ensureCanReadOrUpdateTrunkForUser(
+      requestingUser,
+      userId,
+      'read',
+    );
+
+    const trunk = this.cardService.getTrunk(user);
+    return { trunk };
+  }
+
+  private async ensureCanReadOrUpdateTrunkForUser(
+    requestingUser: User,
+    userId: string,
+    intent: 'read' | 'update',
+  ): Promise<User> {
     const user = await this.userService.findByIdOrFail(new ObjectId(userId));
 
     if (user.trunk) {
       throwUnlessAuthorized(requestingUser, (ability) =>
         user.trunk.every((card) =>
-          ability.can('read', new TrunkOfUser(card, new ObjectId(userId))),
+          ability.can(intent, new TrunkOfUser(card, new ObjectId(userId))),
         ),
       );
     }
-
-    const trunk = this.cardService.getTrunk(user);
-    return { trunk };
+    return user;
   }
 }

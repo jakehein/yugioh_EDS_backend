@@ -9,5 +9,6 @@ import { ContentModule } from '../content/content.module';
   imports: [UserModule, UuidModule, ContentModule],
   controllers: [CardController],
   providers: [CardService],
+  exports: [CardService],
 })
 export class CardModule {}

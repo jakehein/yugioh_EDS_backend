@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { User, UserCard } from '../user/user.schema';
 import { UuidService } from '../uuid/uuid.service';
 import { ContentAccessorService } from '../content/content-accessor.service';
+import { ICard } from './card.interface';
 
 @Injectable()
 export class CardService {
@@ -9,6 +10,23 @@ export class CardService {
     private readonly uuidService: UuidService,
     private readonly contentAccessorService: ContentAccessorService,
   ) {}
+
+  /**
+   * Get the card content data
+   * @param cardId cardId of the card being retrieved
+   * @returns ICard content data
+   */
+  getCardContent(cardId: string): ICard {
+    const card =
+      this.contentAccessorService.getContentEntryByIdAndContentTypeOptional(
+        'cards',
+        cardId,
+      );
+
+    if (!card) throw new Error('card does not exist');
+
+    return card;
+  }
 
   /**
    * Get the contents of the card trunk
@@ -25,7 +43,7 @@ export class CardService {
    * @param cardId card being retrieved
    * @returns the card or null if it doesn't exist
    */
-  getCard(user: User, cardId: string): UserCard | null {
+  getCardFromTrunk(user: User, cardId: string): UserCard | null {
     return user.trunk.find((card) => card.contentId === cardId) ?? null;
   }
 
@@ -36,7 +54,7 @@ export class CardService {
    * @returns the trunk
    */
   addToTrunk(user: User, cardId: string): UserCard {
-    let card = this.getCard(user, cardId);
+    let card = this.getCardFromTrunk(user, cardId);
     if (card) {
       ++card.copies;
       return card;

@@ -1,4 +1,4 @@
-import { Get, Param } from '@nestjs/common';
+import { Get, Param, Post } from '@nestjs/common';
 import { CardService } from './card.service';
 import { RequestUser } from '../request-user.decorator';
 import { TrunkOfUser, User, UserCard } from '../user/user.schema';
@@ -63,6 +63,38 @@ export class CardController {
 
     const trunk = this.cardService.getTrunk(user);
     return { trunk };
+  }
+
+  @Post(':cardId/add-card-by-id')
+  async AddCardToTrunkById(
+    @RequestUser() requestingUser: User,
+    @Param('userId') userId: string,
+    @Param('cardId') cardId: string,
+  ): Promise<{ card: UserCard }> {
+    const user = await this.ensureCanReadOrUpdateTrunkForUser(
+      requestingUser,
+      userId,
+      'update',
+    );
+
+    const card = this.cardService.addToTrunk(user, cardId);
+    return { card };
+  }
+
+  @Post(':passcode/add-card-by-passcode')
+  async AddCardToTrunkByPasscode(
+    @RequestUser() requestingUser: User,
+    @Param('userId') userId: string,
+    @Param('passcode') passcode: string,
+  ): Promise<{ cards: UserCard[] }> {
+    const user = await this.ensureCanReadOrUpdateTrunkForUser(
+      requestingUser,
+      userId,
+      'update',
+    );
+
+    const cards = this.cardService.addToTrunkByPasscode(user, passcode);
+    return { cards };
   }
 
   private async ensureCanReadOrUpdateTrunkForUser(

@@ -4,6 +4,10 @@ import { UuidService } from '../uuid/uuid.service';
 import { ContentAccessorService } from '../content/content-accessor.service';
 import { ICard } from './card.interface';
 
+//FIXME: might need to group by passcode or something
+// might be issue when 2 codes point to 1 card name with 5 different ids
+// 5 different cards would be populated, but we would only have 1 actual card
+// per add to the trunk
 @Injectable()
 export class CardService {
   constructor(
@@ -38,6 +42,22 @@ export class CardService {
   }
 
   /**
+   * Get the content data of the card trunk
+   * @param user user retrieving the contents of their trunk
+   * @returns the trunk's content data
+   */
+  getTrunkContents(user: User): ICard[] {
+    const trunkContent: ICard[] = [];
+    const userTrunk = this.getTrunk(user);
+
+    userTrunk.forEach((x) => {
+      trunkContent.push(this.getCardContent(x.contentId));
+    });
+
+    return trunkContent;
+  }
+
+  /**
    * Get a card from the trunk
    * @param user user owning the card
    * @param cardId card being retrieved
@@ -67,7 +87,9 @@ export class CardService {
   }
 
   /**
-   * Add cards to the trunk given a passcode
+   * Add cards to the trunk given a passcode. Note: One passcode
+   * can be linked to multiple cardIds, ex: 'Dark Magician-Dark Magician'
+   * and 'Dark Magician-Blue-Eyes White Dragon' both have passcode 46986414
    * @param user user getting the cards
    * @param passcode passcode of the cards being added to the trunk
    * @returns the cards that were added to the trunk
@@ -86,6 +108,4 @@ export class CardService {
 
     return userCards;
   }
-
-  //getCardsInTrunkByCertainParam
 }

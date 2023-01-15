@@ -2,14 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { ContentAccessorService } from '../content/content-accessor.service';
 import { User, UserBoosterPack, UserCard } from '../user/user.schema';
 import { BoosterPack, ICard } from '../card/card.interface';
-import { UuidService } from '../uuid/uuid.service';
 import { IBoosterPack } from './booster-pack.interface';
 import { CardService } from '../card/card.service';
 
 @Injectable()
 export class BoosterPackService {
   constructor(
-    private readonly uuidService: UuidService,
     private readonly contentAccessorService: ContentAccessorService,
     private readonly cardService: CardService,
   ) {}

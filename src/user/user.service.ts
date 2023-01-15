@@ -44,8 +44,7 @@ export class UserService {
   ): Promise<User> {
     const accountId = await generateAccountId();
     const name = generateId();
-    //const boosterIds = Object.values(BoosterPack);
-    const boosters: { uuid: string; contentId: string }[] = [];
+    const boosters: { uuid: string; contentId: BoosterPack }[] = [];
     Object.values(BoosterPack).forEach((boosterPack) => {
       boosters.push({
         uuid: this.uuidService.getUuid(),
@@ -72,31 +71,31 @@ export class UserService {
 
   async findById(userId: UserId): Promise<User | null> {
     const user = await this.userRepository.findOne(userId);
-    if (user) this.usersValidationService.validateAllCardsInTrunkExist(user);
+    if (user) this.usersValidationService.validateUserFields(user);
     return user;
   }
 
   async findByIdOrFail(userId: UserId): Promise<User> {
     const user = await this.userRepository.findOneOrFail(userId);
-    this.usersValidationService.validateAllCardsInTrunkExist(user);
+    this.usersValidationService.validateUserFields(user);
     return user;
   }
 
   async findByFirebaseUId(firebaseUId: string): Promise<User | null> {
     const user = await this.userRepository.findOne({ firebaseUId });
-    if (user) this.usersValidationService.validateAllCardsInTrunkExist(user);
+    if (user) this.usersValidationService.validateUserFields(user);
     return user;
   }
 
   async findByAccountIdOrFail(accountId: string): Promise<User> {
     const user = await this.userRepository.findOneOrFail({ accountId });
-    this.usersValidationService.validateAllCardsInTrunkExist(user);
+    this.usersValidationService.validateUserFields(user);
     return user;
   }
 
   async findByAccountId(accountId: string): Promise<User | null> {
     const user = await this.userRepository.findOne({ accountId });
-    if (user) this.usersValidationService.validateAllCardsInTrunkExist(user);
+    if (user) this.usersValidationService.validateUserFields(user);
     return user;
   }
 }

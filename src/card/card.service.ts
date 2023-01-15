@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { User, UserCard } from '../user/user.schema';
+import { User, UserBoosterPack, UserCard } from '../user/user.schema';
 import { UuidService } from '../uuid/uuid.service';
 import { ContentAccessorService } from '../content/content-accessor.service';
 import { ICard } from './card.interface';
@@ -74,13 +74,15 @@ export class CardService {
    * @returns the trunk
    */
   addToTrunk(user: User, cardId: string): UserCard {
+    // TODO: do draws for all other boosters as well based on
+    //       passcode. if null, go by name
     let card = this.getCardFromTrunk(user, cardId);
     if (card) {
       ++card.copies;
       return card;
     } else {
       const uuid = this.uuidService.getUuid();
-      card = new UserCard(uuid, cardId);
+      card = new UserCard(uuid, cardId, 1);
       user.trunk.push(card);
       return card;
     }
@@ -95,6 +97,8 @@ export class CardService {
    * @returns the cards that were added to the trunk
    */
   addToTrunkByPasscode(user: User, passcode: string): UserCard[] {
+    // TODO: do draws for all other boosters as well based on
+    //       passcode. if null, go by name
     const userCards: UserCard[] = [];
     const contentCards =
       this.contentAccessorService.getAllContentCardsByPasscode(passcode);
@@ -107,5 +111,32 @@ export class CardService {
     // TODO: need to add these cards to the userBoosterPack list?
 
     return userCards;
+  }
+
+  /**
+   * Check if boostersCompleted needs updating and return the
+   * values that are added if there are any
+   * @param user user with the boosters being checked
+   * @returns UserBoosterPack[] elements added after check
+   */
+  checkBoostersCompletedForUser(user: User): UserBoosterPack[] {
+    const boostersAvailable = user.boostersAvailable;
+    const boostersCompleted = user.boostersCompleted;
+
+    return boostersAvailable.filter((currentBoosterPack) => {
+      const unobtainedUserCard = currentBoosterPack.cardIds.find(
+        (x) => x.copies === 0,
+      );
+      if (!unobtainedUserCard) {
+        const completedBoosterPack = boostersCompleted.find(
+          (x) => x.contentId === currentBoosterPack.contentId,
+        );
+        if (!completedBoosterPack) {
+          user.boostersCompleted.push(currentBoosterPack);
+          return true;
+        }
+      }
+      return false;
+    });
   }
 }

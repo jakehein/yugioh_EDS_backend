@@ -20,11 +20,12 @@ export class UserCard {
   contentId: string;
 
   @Property()
-  copies = 1;
+  copies: number;
 
-  constructor(id: string, cardId: string) {
+  constructor(id: string, cardId: string, copies = 0) {
     this.id = id;
     this.contentId = cardId;
+    this.copies = copies;
   }
 }
 
@@ -54,14 +55,22 @@ export class UserBoosterPack {
   id: string;
 
   @Property()
-  contentId: string;
+  contentId: BoosterPack;
 
   @Property()
   isUnlocked = false;
 
-  constructor(id: string, boosterPackId: string) {
+  @Property()
+  cardIds: UserCard[];
+
+  constructor(
+    id: string,
+    boosterPackId: BoosterPack,
+    cardIds: UserCard[] = [],
+  ) {
     this.id = id;
     this.contentId = boosterPackId;
+    this.cardIds = cardIds;
 
     switch (boosterPackId) {
       case BoosterPack.DarkMagician:
@@ -123,13 +132,13 @@ export class User {
     accountId: string,
     name: string,
     authTime = 0,
-    boosters: { uuid: string; contentId: string }[],
+    boosters: { uuid: string; contentId: BoosterPack }[],
   ) {
     this.firebaseUId = firebaseUId;
     this.accountId = accountId;
     this.name = name;
     this.authTime = authTime;
-    boosters.forEach((booster: { uuid: string; contentId: string }) =>
+    boosters.forEach((booster: { uuid: string; contentId: BoosterPack }) =>
       this.boostersAvailable.push(
         new UserBoosterPack(booster.uuid, booster.contentId),
       ),

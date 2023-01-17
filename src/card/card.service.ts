@@ -74,18 +74,17 @@ export class CardService {
    * @returns the trunk
    */
   addToTrunk(user: User, cardId: string): UserCard {
-    // TODO: do draws for all other boosters as well based on
-    //       passcode. if null, go by name
     let card = this.getCardFromTrunk(user, cardId);
     if (card) {
+      //make sure this actually saves correctly
       ++card.copies;
-      return card;
     } else {
       const uuid = this.uuidService.getUuid();
       card = new UserCard(uuid, cardId, 1);
       user.trunk.push(card);
-      return card;
     }
+    this.updateBoosterPackCard(user, card);
+    return card;
   }
 
   /**
@@ -97,8 +96,6 @@ export class CardService {
    * @returns the cards that were added to the trunk
    */
   addToTrunkByPasscode(user: User, passcode: string): UserCard[] {
-    // TODO: do draws for all other boosters as well based on
-    //       passcode. if null, go by name
     const userCards: UserCard[] = [];
     const contentCards =
       this.contentAccessorService.getAllContentCardsByPasscode(passcode);
@@ -107,8 +104,6 @@ export class CardService {
       const userCard = this.addToTrunk(user, card.id);
       userCards.push(userCard);
     });
-
-    // TODO: need to add these cards to the userBoosterPack list?
 
     return userCards;
   }
@@ -137,6 +132,23 @@ export class CardService {
         }
       }
       return false;
+    });
+  }
+
+  /**
+   * Update the boostersAvailable for the user with newly added UserCard
+   * @param user user getting the card
+   * @param card UserCard added that needs updating in UserBoosterPack list
+   */
+  private updateBoosterPackCard(user: User, card: UserCard): void {
+    user.boostersAvailable.find((x) => {
+      const boosterCard: UserCard | undefined = x.cardIds.find(
+        (y) => y.contentId === card.contentId,
+      );
+      if (!boosterCard) {
+        throw new Error('Card does not exist on booster');
+      }
+      ++boosterCard.copies;
     });
   }
 }

@@ -8,6 +8,9 @@ import {
   IsEnum,
   IsOptional,
   IsInt,
+  ArrayMaxSize,
+  ArrayMinSize,
+  IsNotEmpty,
 } from 'class-validator';
 import { ApiBearerAuth, ApiProperty, ApiTags } from '@nestjs/swagger';
 import { applyDecorators } from '@nestjs/common';
@@ -46,6 +49,23 @@ export function ObjectArrayOfTypeDecorator(
 export function StringApiDecorator(isOptional = false): PropertyDecorator {
   return applyDecorators(
     IsString(),
+    ApiProperty({ required: !isOptional }),
+    ...(isOptional ? [IsOptional()] : []),
+  );
+}
+
+/**
+ * Create compound Property Decorator for validation of string array ApiDecorator
+ * @param isOptional defaulted false for determining if optional
+ * @returns new custom PropertyDecoration rule
+ */
+export function StringArrayApiDecorator(isOptional = false): PropertyDecorator {
+  return applyDecorators(
+    IsArray(),
+    ArrayMaxSize(5),
+    ArrayMinSize(5),
+    IsString({ each: true }),
+    IsNotEmpty({ each: true }),
     ApiProperty({ required: !isOptional }),
     ...(isOptional ? [IsOptional()] : []),
   );

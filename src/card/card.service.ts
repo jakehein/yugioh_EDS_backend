@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { User, UserBoosterPack, UserCard } from '../user/user.schema';
 import { UuidService } from '../uuid/uuid.service';
 import { ContentAccessorService } from '../content/content-accessor.service';
-import { ICard } from './card.interface';
+import { ICard, ICardCopies } from './card.interface';
 
 //FIXME: might need to group by passcode or something
 // might be issue when 2 codes point to 1 card name with 5 different ids
@@ -20,7 +20,7 @@ export class CardService {
    * @param cardId cardId of the card being retrieved
    * @returns ICard content data
    */
-  getCardContent(cardId: string): ICard {
+  getCardContent(cardId: string, copies = 0): ICard | ICardCopies {
     const card =
       this.contentAccessorService.getContentEntryByIdAndContentTypeOptional(
         'cards',
@@ -29,7 +29,11 @@ export class CardService {
 
     if (!card) throw new Error('card does not exist');
 
-    return card;
+    if (copies) {
+      return card;
+    } else {
+      return { ...card, copies };
+    }
   }
 
   /**
@@ -46,12 +50,14 @@ export class CardService {
    * @param user user retrieving the contents of their trunk
    * @returns the trunk's content data
    */
-  getTrunkContents(user: User): ICard[] {
-    const trunkContent: ICard[] = [];
+  getTrunkContents(user: User): ICardCopies[] {
+    const trunkContent: ICardCopies[] = [];
     const userTrunk = this.getTrunk(user);
 
     userTrunk.forEach((x) => {
-      trunkContent.push(this.getCardContent(x.contentId));
+      trunkContent.push(
+        this.getCardContent(x.contentId, x.copies) as ICardCopies,
+      );
     });
 
     return trunkContent;
@@ -150,5 +156,32 @@ export class CardService {
       }
       ++boosterCard.copies;
     });
+  }
+
+  /**
+   * Get the number of copies a user has of a card by a given cardName
+   * Note: The user can ignore the id and boosterName of the card.
+   * These might be filtered out at a later time...
+   * @param user user retrieving the card data grouped by passcode
+   * @param cardName name of the card being filtered on
+   * @returns a list of ICards with the number of copies the user has
+   */
+  getGeneralCardDataBasedOnPasscode(
+    user: User,
+    cardName: string,
+  ): ICardCopies[] {
+    const cardContents = this.getTrunkContents(user);
+    const cardsWithName = cardContents.filter((x) => x.name === cardName);
+    const cardPasscodes: string[] = [];
+    const cardsData: ICardCopies[] = cardsWithName.filter((card) => {
+      if (card.passcode && !cardPasscodes.includes(card.passcode)) {
+        cardPasscodes.push(card.passcode);
+        return true;
+      } else {
+        return false;
+      }
+    });
+
+    return cardsData;
   }
 }

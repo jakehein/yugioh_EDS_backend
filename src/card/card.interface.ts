@@ -125,3 +125,9 @@ export interface ICard {
 }
 
 export declare const cardT: t.Type<ICard>;
+
+export interface ICardCopies extends ICard {
+  copies: number;
+}
+
+export declare const cardCopiesT: t.Type<ICardCopies>;

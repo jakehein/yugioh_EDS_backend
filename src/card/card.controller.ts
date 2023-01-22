@@ -6,7 +6,7 @@ import { UserService } from '../user/user.service';
 import { ObjectId } from '@mikro-orm/mongodb';
 import { throwUnlessAuthorized } from '../auth/casl-helper';
 import { CommonGuardedControllerDecorator } from '../_util/decorators/compoundDecorators';
-import { ICard } from './card.interface';
+import { ICard, ICardCopies } from './card.interface';
 
 @CommonGuardedControllerDecorator('Cards', 'user/:userId/cards')
 export class CardController {

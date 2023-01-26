@@ -29,24 +29,43 @@ export class UserCard {
   }
 }
 
-//TODO: Need to probably have an id on this?
 @Embeddable()
 export class UserDeck {
   @Property()
-  deckId = '1';
+  id: string;
 
-  @Property({ nullable: true })
-  cards?: UserCard[];
+  @Property()
+  name: string;
+
+  //need to be based on cardName, not id
+  @Property()
+  cards: string[];
+
+  constructor(id: string, name: string, cards: string[] = []) {
+    this.id = id;
+    this.name = name;
+    this.cards = cards;
+  }
 }
 
-//TODO: Need to probably have an id on this?
 @Embeddable()
 export class UserSideDeck {
   @Property()
-  sideDeckId = '1';
+  id: string;
 
-  @Property({ nullable: true })
-  cards?: UserCard[];
+  @Property()
+  name: string;
+
+  //TODO: enforce only 15 allowed per SideDeck
+  //need to be based on cardName, not id
+  @Property()
+  cards: string[];
+
+  constructor(id: string, name: string, cards: string[] = []) {
+    this.id = id;
+    this.name = name;
+    this.cards = cards;
+  }
 }
 
 @Embeddable()
@@ -115,11 +134,11 @@ export class User {
   @Embedded(() => UserSideDeck, { object: true, array: true })
   sideDecks: UserSideDeck[] = [];
 
-  @Embedded(() => UserDeck, { object: true, array: true })
-  currentDeck: UserDeck = new UserDeck();
+  @Embedded(() => UserDeck, { object: true })
+  currentDeck: UserDeck;
 
-  @Embedded(() => UserSideDeck, { object: true, array: true })
-  currentSideDeck: UserSideDeck = new UserSideDeck();
+  @Embedded(() => UserSideDeck, { object: true })
+  currentSideDeck: UserSideDeck;
 
   @Embedded(() => UserBoosterPack, { object: true, array: true })
   boostersAvailable: UserBoosterPack[] = [];
@@ -133,11 +152,19 @@ export class User {
     name: string,
     authTime = 0,
     boosters: { uuid: string; contentId: BoosterPack }[],
+    currentDeckId: string,
+    currentSideDeckId: string,
   ) {
     this.firebaseUId = firebaseUId;
     this.accountId = accountId;
     this.name = name;
     this.authTime = authTime;
+    this.currentDeck = new UserDeck(currentDeckId, 'Starter Deck', []);
+    this.currentSideDeck = new UserSideDeck(
+      currentSideDeckId,
+      'Starter Side Deck',
+      [],
+    );
     boosters.forEach((booster: { uuid: string; contentId: BoosterPack }) =>
       this.boostersAvailable.push(
         new UserBoosterPack(booster.uuid, booster.contentId),

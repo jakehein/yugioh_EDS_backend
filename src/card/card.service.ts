@@ -29,7 +29,7 @@ export class CardService {
 
     if (!card) throw new Error('card does not exist');
 
-    if (copies) {
+    if (!copies) {
       return card;
     } else {
       return { ...card, copies };

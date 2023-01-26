@@ -51,7 +51,15 @@ export class UserService {
         contentId: boosterPack,
       });
     });
-    const user = new User(firebaseUId, accountId, name, authTime, boosters);
+    const user = new User(
+      firebaseUId,
+      accountId,
+      name,
+      authTime,
+      boosters,
+      this.uuidService.getUuid(),
+      this.uuidService.getUuid(),
+    );
     try {
       await this.userRepository.persistAndFlush(user);
       return user;

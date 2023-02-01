@@ -102,6 +102,22 @@ export enum Attribute {
 
 export declare const attributeEnumT: t.Type<Attribute>;
 
+export enum Status {
+  Forbidden = 'Forbidden',
+  Limited = 'Limited',
+  SemiLimited = 'Semi-Limited',
+  Unlimited = 'Unlimited',
+}
+
+export declare const StatusEnumT: t.Type<Status>;
+
+export const AllowedByStatus: Record<Status, number> = {
+  [Status.Forbidden]: 0,
+  [Status.Limited]: 1,
+  [Status.SemiLimited]: 2,
+  [Status.Unlimited]: 3,
+};
+
 export interface ICard {
   id: string;
   name: string;
@@ -112,6 +128,7 @@ export interface ICard {
   imgLink: RequestInfo | URL;
   isFusionMonster: boolean;
   isRitualMonster: boolean;
+  status: Status;
   property?: Property;
   passcode?: string;
   monsterTypes?: MonsterType[];

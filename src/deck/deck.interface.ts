@@ -1,7 +1,10 @@
 import { ICard } from '../card/card.interface';
+import { cardContentId } from '../user/user.schema';
 
-interface IDeckShared {
+interface IDeckBase {
   id: string;
+  name: string;
+  deckSize: number;
   monsters: number;
   traps: number;
   spells: number;
@@ -9,10 +12,10 @@ interface IDeckShared {
   ritualMonsters: number;
 }
 
-export interface IDeck extends IDeckShared {
-  cards: string[];
+export interface IDeck extends IDeckBase {
+  cards: cardContentId[];
 }
 
-export interface IDeckContent extends IDeckShared {
+export interface IDeckContent extends IDeckBase {
   cards: ICard[];
 }

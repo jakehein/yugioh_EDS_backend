@@ -39,6 +39,8 @@ export class DeckService {
     const deck = this.getCurrentDeck(user);
     const deckData: IDeckContent = {
       id: deck.id,
+      name: deck.name,
+      deckSize: 0,
       monsters: 0,
       traps: 0,
       spells: 0,
@@ -47,14 +49,12 @@ export class DeckService {
       cards: [],
     };
 
-    //FIXME: probably change this to use passcode instead?
-    deck.cards.forEach((cardName) => {
-      const cardContent = this.cardService.getCardFromTrunk(user);
-      // const cardContent =
-      //   this.contentAccessorService.getContentEntryByIdAndContentTypeOptional(
-      //     'cards',
-      //     userCard.contentId,
-      //   );
+    deck.cards.forEach((cardContentId) => {
+      const cardContent =
+        this.contentAccessorService.getContentEntryByIdAndContentTypeOptional(
+          'cards',
+          cardContentId,
+        );
 
       if (!cardContent) throw new Error('Card does not exist');
 
@@ -74,22 +74,28 @@ export class DeckService {
           deckData.traps++;
           break;
       }
+
+      if (!cardContent.isFusionMonster) {
+        deckData.deckSize++;
+      }
       deckData.cards.push(cardContent);
     });
 
     return deckData;
   }
 
-  //TODO: should this be changed to add based on passcode?
-  addCardToDeck(user: User, deckId: string, cardId: string) {
+  //TODO: this needs to be checked by name
+  addCardToDeck(user: User, deckId: string, cardContentId: string) {
     const updateDeck = user.decks.find((x) => x.id === deckId);
+
     if (!updateDeck) throw new Error('Deck does not exist');
-    const cardName = this.cardService.getCardContent(cardId).name;
+
+    const cardName = this.cardService.getCardContent(cardContentId).name;
 
     const copiesOfCardIdInDeck = updateDeck.cards.filter(
       (x) => x === cardName,
     ).length;
-    const cardInTrunk = this.cardService.getCardFromTrunk(user, cardId);
+    const cardInTrunk = this.cardService.getCardFromTrunk(user, cardContentId);
 
     if (!cardInTrunk) throw new Error('Card not in trunk');
 

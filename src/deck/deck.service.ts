@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { ContentAccessorService } from '../content/content-accessor.service';
 import { CardService } from '../card/card.service';
 import { User, UserDeck, CardContentId } from '../user/user.schema';
 import { IDeckContent } from './deck.interface';
@@ -9,7 +8,6 @@ import { UuidService } from '../uuid/uuid.service';
 @Injectable()
 export class DeckService {
   constructor(
-    private readonly contentAccessorService: ContentAccessorService,
     private readonly cardService: CardService,
     private readonly uuidService: UuidService,
   ) {}
@@ -52,11 +50,7 @@ export class DeckService {
     };
 
     deck.cards.forEach((cardContentId) => {
-      const cardContent =
-        this.contentAccessorService.getContentEntryByIdAndContentTypeOptional(
-          'cards',
-          cardContentId,
-        );
+      const cardContent = this.cardService.getCardContent(cardContentId);
 
       if (!cardContent) throw new Error('Card does not exist');
 

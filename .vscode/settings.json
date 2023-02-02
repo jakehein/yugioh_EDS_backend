@@ -1,4 +1,5 @@
 {
   "typescript.preferences.importModuleSpecifier": "relative",
   "terminal.integrated.defaultProfile.windows": "Git Bash",
+  "typescript.tsdk": "node_modules\\typescript\\lib",
 }

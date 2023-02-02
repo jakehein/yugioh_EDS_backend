@@ -1,5 +1,5 @@
 import { ICard } from '../card/card.interface';
-import { cardContentId } from '../user/user.schema';
+import { CardContentId } from '../user/user.schema';
 
 interface IDeckBase {
   id: string;
@@ -13,7 +13,7 @@ interface IDeckBase {
 }
 
 export interface IDeck extends IDeckBase {
-  cards: cardContentId[];
+  cards: CardContentId[];
 }
 
 export interface IDeckContent extends IDeckBase {

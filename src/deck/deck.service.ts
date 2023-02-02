@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { ContentAccessorService } from '../content/content-accessor.service';
 import { CardService } from '../card/card.service';
-import { User, UserDeck } from '../user/user.schema';
+import { User, UserDeck, CardContentId } from '../user/user.schema';
 import { IDeckContent } from './deck.interface';
-import { CardType } from '../card/card.interface';
+import { AllowedByStatus, CardType, Status } from '../card/card.interface';
+import { number } from 'io-ts';
 
 @Injectable()
 export class DeckService {
@@ -84,30 +85,66 @@ export class DeckService {
     return deckData;
   }
 
-  //TODO: this needs to be checked by name
-  addCardToDeck(user: User, deckId: string, cardContentId: string) {
-    const updateDeck = user.decks.find((x) => x.id === deckId);
+  updateCurrentDeck(user: User, cardContentIds: CardContentId[]) {
+    type CardName = string;
+    type CopiesAllowed = {
+      copies: number;
+      allowedByStatus: number;
+    };
 
-    if (!updateDeck) throw new Error('Deck does not exist');
+    const cardsCopiesAllowed: Map<CardName, CopiesAllowed> = new Map();
 
-    const cardName = this.cardService.getCardContent(cardContentId).name;
+    cardContentIds.forEach((cardContentId) => {
+      const cardContent = this.cardService.getCardContent(cardContentId);
+      const cardCopyAllowed = cardsCopiesAllowed.get(cardContent.name);
 
-    const copiesOfCardIdInDeck = updateDeck.cards.filter(
-      (x) => x === cardName,
-    ).length;
-    const cardInTrunk = this.cardService.getCardFromTrunk(user, cardContentId);
+      if (!cardCopyAllowed) {
+        if (cardContent.status === Status.Forbidden) {
+          throw new Error('Egyptian God Cards Are Forbidden');
+        }
 
-    if (!cardInTrunk) throw new Error('Card not in trunk');
+        cardsCopiesAllowed.set(cardContent.name, {
+          copies: 1,
+          allowedByStatus: AllowedByStatus[cardContent.status],
+        });
+      } else {
+        if (cardCopyAllowed.copies >= cardCopyAllowed.allowedByStatus) {
+          throw new Error(
+            `Only allowed to add ${cardCopyAllowed.allowedByStatus} copies of ${cardContent.name}`,
+          );
+        }
+        cardCopyAllowed.copies++;
+      }
+    });
 
-    if (
-      copiesOfCardIdInDeck > 0 &&
-      cardInTrunk.copies > copiesOfCardIdInDeck &&
-      copiesOfCardIdInDeck <= 3
-    ) {
-      //add card to deck
-      updateDeck.cards.push(cardName);
-    } else {
-      throw new Error('Cannot add card to deck, all copies currently added');
-    }
+    //FINISH THE THOUGHT...
+
+    // const a = cardContentIds.map((cardContentId) => {
+    //   this.cardService.getCardContent(cardContentId);
+    //   return { cardName: 'a', status: 'b' };
+    // });
+    // cardContentIds.forEach((cardContentId) => {
+
+    // });
+
+    //const cardName = this.cardService.getCardContent(cardContentId).name;
+
+    // const copiesOfCardIdInDeck = user.currentDeck.cards.filter(
+    //   (x) => x === cardName,
+    // ).length;
+    // const cardInTrunk = this.cardService.getCardFromTrunk(user, cardContentId);
+
+    // if (!cardInTrunk) throw new Error('Card not in trunk');
+
+    // if (
+    //   copiesOfCardIdInDeck > 0 &&
+    //   cardInTrunk.copies > copiesOfCardIdInDeck &&
+    //   copiesOfCardIdInDeck <= 3
+    // ) {
+    //   //add card to deck
+    //   updateDeck.cards.push(cardName);
+    // } else {
+    //   throw new Error('Cannot add card to deck, all copies currently added');
+    // }
   }
 }

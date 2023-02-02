@@ -20,7 +20,7 @@ export class CardService {
    * @param cardId cardId of the card being retrieved
    * @returns ICard content data
    */
-  getCardContent(cardId: string, copies = 0): ICard | ICardCopies {
+  getCardContent(cardId: string): ICard {
     const card =
       this.contentAccessorService.getContentEntryByIdAndContentTypeOptional(
         'cards',
@@ -29,11 +29,7 @@ export class CardService {
 
     if (!card) throw new Error('card does not exist');
 
-    if (!copies) {
-      return card;
-    } else {
-      return { ...card, copies };
-    }
+    return card;
   }
 
   /**
@@ -55,9 +51,10 @@ export class CardService {
     const userTrunk = this.getTrunk(user);
 
     userTrunk.forEach((x) => {
-      trunkContent.push(
-        this.getCardContent(x.contentId, x.copies) as ICardCopies,
-      );
+      trunkContent.push({
+        ...this.getCardContent(x.contentId),
+        copies: x.copies,
+      } as ICardCopies);
     });
 
     return trunkContent;

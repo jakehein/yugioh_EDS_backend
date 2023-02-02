@@ -10,7 +10,7 @@ import { ObjectId } from '@mikro-orm/mongodb';
 import { BoosterPack } from '../card/card.interface';
 
 export type UserId = User['_id'];
-export type cardContentId = string;
+export type CardContentId = string;
 
 @Embeddable()
 export class UserCard {
@@ -41,11 +41,11 @@ export class UserDeck {
   // TODO: enforce min 40 and max (whatever it is)
   // TODO: enforce limits for how many can be in deck in frontend (0, 1, 2, or 3) by name (`name-booster`)
   // don't block if not 40, just give warning to user
-  // this is labeled as a cardContentId array for clarity of what's being stored here
+  // this is labeled as a CardContentId array for clarity of what's being stored here
   @Property()
-  cards: cardContentId[];
+  cards: CardContentId[];
 
-  constructor(id: string, name: string, cards: cardContentId[] = []) {
+  constructor(id: string, name: string, cards: CardContentId[] = []) {
     this.id = id;
     this.name = name;
     this.cards = cards;
@@ -62,11 +62,11 @@ export class UserSideDeck {
 
   // TODO: enforce only 15 allowed per SideDeck
   // TODO: enforce limits for how many can be in deck in frontend (0, 1, 2, or 3) by name (`name-booster`)
-  // this is labeled as a cardContentId array for clarity of what's being stored here
+  // this is labeled as a CardContentId array for clarity of what's being stored here
   @Property()
-  cards: cardContentId[];
+  cards: CardContentId[];
 
-  constructor(id: string, name: string, cards: cardContentId[] = []) {
+  constructor(id: string, name: string, cards: CardContentId[] = []) {
     this.id = id;
     this.name = name;
     this.cards = cards;

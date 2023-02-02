@@ -3,6 +3,10 @@ import { User, UserBoosterPack, UserCard } from '../user/user.schema';
 import { UuidService } from '../uuid/uuid.service';
 import { ContentAccessorService } from '../content/content-accessor.service';
 import { ICard, ICardCopies } from './card.interface';
+import {
+  BoosterPackDoesNotContainCardException,
+  CardNotFoundException,
+} from '../content-errors';
 
 //FIXME: might need to group by passcode or something
 // might be issue when 2 codes point to 1 card name with 5 different ids
@@ -27,7 +31,7 @@ export class CardService {
         cardId,
       );
 
-    if (!card) throw new Error('card does not exist');
+    if (!card) throw new CardNotFoundException(cardId);
 
     return card;
   }
@@ -144,12 +148,15 @@ export class CardService {
    * @param card UserCard added that needs updating in UserBoosterPack list
    */
   private updateBoosterPackCard(user: User, card: UserCard): void {
-    user.boostersAvailable.find((x) => {
-      const boosterCard: UserCard | undefined = x.cardIds.find(
-        (y) => y.contentId === card.contentId,
+    user.boostersAvailable.find((userBoosterPack) => {
+      const boosterCard = userBoosterPack.cardIds.find(
+        (userCard) => userCard.contentId === card.contentId,
       );
       if (!boosterCard) {
-        throw new Error('Card does not exist on booster');
+        throw new BoosterPackDoesNotContainCardException(
+          userBoosterPack.contentId,
+          card.contentId,
+        );
       }
       ++boosterCard.copies;
     });

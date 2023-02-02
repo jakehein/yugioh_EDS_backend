@@ -4,6 +4,11 @@ import { User, UserBoosterPack, UserCard } from '../user/user.schema';
 import { BoosterPack, ICard } from '../card/card.interface';
 import { IBoosterPack } from './booster-pack.interface';
 import { CardService } from '../card/card.service';
+import {
+  BoosterPackDoesNotContainCardException,
+  BoosterPackNotFoundException,
+  CardNotFoundException,
+} from '../content-errors';
 
 @Injectable()
 export class BoosterPackService {
@@ -43,7 +48,7 @@ export class BoosterPackService {
         boosterId,
       );
 
-    if (!boosterPack) throw new Error('boosterPack does not exist');
+    if (!boosterPack) throw new BoosterPackNotFoundException(boosterId);
 
     return boosterPack;
   }
@@ -56,13 +61,13 @@ export class BoosterPackService {
   getCardsOfBoosterPack(boosterId: BoosterPack): ICard[] {
     const cardIds = this.getBoosterPackContent(boosterId).cardIds;
 
-    const cards = cardIds.map((x) => {
+    const cards = cardIds.map((cardId) => {
       const card =
         this.contentAccessorService.getContentEntryByIdAndContentTypeOptional(
           'cards',
-          x,
+          cardId,
         );
-      if (!card) throw new Error('card content does not exist');
+      if (!card) throw new CardNotFoundException(cardId);
       return card;
     });
     return cards;
@@ -85,10 +90,10 @@ export class BoosterPackService {
     const userCards: UserCard[] = [];
     const boosterPack = this.getBoosterPackContent(boosterId);
 
-    cardData.cardIds.forEach((x) => {
-      if (!boosterPack.cardIds.includes(x))
-        throw new Error('card does not exist in boosterPack');
-      userCards.push(this.cardService.addToTrunk(user, x));
+    cardData.cardIds.forEach((cardId) => {
+      if (!boosterPack.cardIds.includes(cardId))
+        throw new BoosterPackDoesNotContainCardException(boosterId, cardId);
+      userCards.push(this.cardService.addToTrunk(user, cardId));
     });
 
     return userCards;

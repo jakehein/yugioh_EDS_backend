@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import _ from 'lodash';
+import { BoosterPackNotFoundException } from '../content-errors';
 import { ContentAccessorService } from '../content/content-accessor.service';
 import { User, UserBoosterPack, UserCard } from '../user/user.schema';
 import { UuidService } from '../uuid/uuid.service';
@@ -68,7 +69,8 @@ export class UsersValidationService {
             currentBoosterPack.contentId,
           );
 
-        if (!contentBoosterPack) throw new Error('booster pack does not exist');
+        if (!contentBoosterPack)
+          throw new BoosterPackNotFoundException(currentBoosterPack.contentId);
 
         if (currentBoosterPack.cardIds.length < 1) {
           const cardIds = contentBoosterPack.cardIds.map((cardId) => {

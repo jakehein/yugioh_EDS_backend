@@ -4,6 +4,11 @@ import { User, UserDeck, CardContentId } from '../user/user.schema';
 import { IDeckContent } from './deck.interface';
 import { AllowedByStatus, CardType, Status } from '../card/card.interface';
 import { UuidService } from '../uuid/uuid.service';
+import {
+  CardCopyLimitReachedException,
+  CardNotFoundException,
+  ForbiddenCardException,
+} from '../content-errors';
 
 @Injectable()
 export class DeckService {
@@ -52,7 +57,7 @@ export class DeckService {
     deck.cards.forEach((cardContentId) => {
       const cardContent = this.cardService.getCardContent(cardContentId);
 
-      if (!cardContent) throw new Error('Card does not exist');
+      if (!cardContent) throw new CardNotFoundException(cardContentId);
 
       switch (cardContent.cardType) {
         case CardType.Monster:
@@ -104,7 +109,7 @@ export class DeckService {
 
       if (!cardCopyAllowed) {
         if (cardContent.status === Status.Forbidden) {
-          throw new Error('Egyptian God Cards Are Forbidden');
+          throw new ForbiddenCardException(cardContentId);
         }
 
         cardsCopiesAllowed.set(cardContent.name, {
@@ -113,8 +118,9 @@ export class DeckService {
         });
       } else {
         if (cardCopyAllowed.copies >= cardCopyAllowed.allowedByStatus) {
-          throw new Error(
-            `Only allowed to add ${cardCopyAllowed.allowedByStatus} copies of ${cardContent.name}`,
+          throw new CardCopyLimitReachedException(
+            cardCopyAllowed.allowedByStatus,
+            cardContent.name,
           );
         }
         cardCopyAllowed.copies++;

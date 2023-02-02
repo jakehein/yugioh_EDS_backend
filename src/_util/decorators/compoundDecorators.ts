@@ -56,14 +56,28 @@ export function StringApiDecorator(isOptional = false): PropertyDecorator {
 
 /**
  * Create compound Property Decorator for validation of string array ApiDecorator
+ * with min-max definitions of 5 cards
+ * @param isOptional defaulted false for determining if optional
+ * @returns new custom PropertyDecoration rule
+ */
+export function BoosterPackStringArrayApiDecorator(
+  isOptional = false,
+): PropertyDecorator {
+  return applyDecorators(
+    StringArrayApiDecorator(isOptional),
+    ArrayMaxSize(5),
+    ArrayMinSize(5),
+  );
+}
+
+/**
+ * Create compound Property Decorator for validation of string array ApiDecorator
  * @param isOptional defaulted false for determining if optional
  * @returns new custom PropertyDecoration rule
  */
 export function StringArrayApiDecorator(isOptional = false): PropertyDecorator {
   return applyDecorators(
     IsArray(),
-    ArrayMaxSize(5),
-    ArrayMinSize(5),
     IsString({ each: true }),
     IsNotEmpty({ each: true }),
     ApiProperty({ required: !isOptional }),

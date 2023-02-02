@@ -1,6 +1,6 @@
-import { StringArrayApiDecorator } from '../_util/decorators/compoundDecorators';
+import { BoosterPackStringArrayApiDecorator } from '../_util/decorators/compoundDecorators';
 
 export class CardIdsDto {
-  @StringArrayApiDecorator()
+  @BoosterPackStringArrayApiDecorator()
   cardIds!: [string, string, string, string, string];
 }

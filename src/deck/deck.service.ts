@@ -4,13 +4,14 @@ import { CardService } from '../card/card.service';
 import { User, UserDeck, CardContentId } from '../user/user.schema';
 import { IDeckContent } from './deck.interface';
 import { AllowedByStatus, CardType, Status } from '../card/card.interface';
-import { number } from 'io-ts';
+import { UuidService } from '../uuid/uuid.service';
 
 @Injectable()
 export class DeckService {
   constructor(
     private readonly contentAccessorService: ContentAccessorService,
     private readonly cardService: CardService,
+    private readonly uuidService: UuidService,
   ) {}
 
   /**
@@ -85,7 +86,16 @@ export class DeckService {
     return deckData;
   }
 
-  updateCurrentDeck(user: User, cardContentIds: CardContentId[]) {
+  /**
+   * Update the currentDeck of the user with new Cards supplied by user
+   * @param user user updating their currentDeck
+   * @param cardContentIds cards being updated for the user
+   * @returns the new userDeck
+   */
+  updateCurrentDeck(
+    user: User,
+    cardContentIds: { cardContentIds: CardContentId[] },
+  ): UserDeck {
     type CardName = string;
     type CopiesAllowed = {
       copies: number;
@@ -94,7 +104,7 @@ export class DeckService {
 
     const cardsCopiesAllowed: Map<CardName, CopiesAllowed> = new Map();
 
-    cardContentIds.forEach((cardContentId) => {
+    cardContentIds.cardContentIds.forEach((cardContentId) => {
       const cardContent = this.cardService.getCardContent(cardContentId);
       const cardCopyAllowed = cardsCopiesAllowed.get(cardContent.name);
 
@@ -117,34 +127,14 @@ export class DeckService {
       }
     });
 
-    //FINISH THE THOUGHT...
+    // creating a new object to enable flushing to DB
+    const userDeck = new UserDeck(
+      this.uuidService.getUuid(),
+      user.currentDeck.name,
+      cardContentIds.cardContentIds,
+    );
 
-    // const a = cardContentIds.map((cardContentId) => {
-    //   this.cardService.getCardContent(cardContentId);
-    //   return { cardName: 'a', status: 'b' };
-    // });
-    // cardContentIds.forEach((cardContentId) => {
-
-    // });
-
-    //const cardName = this.cardService.getCardContent(cardContentId).name;
-
-    // const copiesOfCardIdInDeck = user.currentDeck.cards.filter(
-    //   (x) => x === cardName,
-    // ).length;
-    // const cardInTrunk = this.cardService.getCardFromTrunk(user, cardContentId);
-
-    // if (!cardInTrunk) throw new Error('Card not in trunk');
-
-    // if (
-    //   copiesOfCardIdInDeck > 0 &&
-    //   cardInTrunk.copies > copiesOfCardIdInDeck &&
-    //   copiesOfCardIdInDeck <= 3
-    // ) {
-    //   //add card to deck
-    //   updateDeck.cards.push(cardName);
-    // } else {
-    //   throw new Error('Cannot add card to deck, all copies currently added');
-    // }
+    user.currentDeck = userDeck;
+    return user.currentDeck;
   }
 }

@@ -9,12 +9,14 @@ import {
   BoosterPackNotFoundException,
   CardNotFoundException,
 } from '../content-errors';
+import { UuidService } from '../uuid/uuid.service';
 
 @Injectable()
 export class BoosterPackService {
   constructor(
     private readonly contentAccessorService: ContentAccessorService,
     private readonly cardService: CardService,
+    private readonly uuidService: UuidService,
   ) {}
 
   /**
@@ -24,6 +26,21 @@ export class BoosterPackService {
    */
   getAvailableBoosters(user: User): UserBoosterPack[] {
     return user.boostersAvailable;
+  }
+
+  /**
+   * Add a booster pack to the user given a boosterId
+   * @param user user adding a booster pack to their list of available packs
+   * @param boosterId the content id of the pack being added
+   * @returns the UserBoosterPack added
+   */
+  addAvailableBoosterPack(user: User, boosterId: BoosterPack): UserBoosterPack {
+    const userBoosterPack = new UserBoosterPack(
+      this.uuidService.getUuid(),
+      boosterId,
+    );
+    user.boostersAvailable.push(userBoosterPack);
+    return userBoosterPack;
   }
 
   /**

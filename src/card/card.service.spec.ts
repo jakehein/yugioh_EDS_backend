@@ -99,4 +99,10 @@ describe('CardService', () => {
       expect(getCardContentTest).toMatchObject(card);
     });
   });
+
+  // describe('getTrunk', () => {
+  //   it('gets the trunk of a given user', () => {
+  //     expect({}).toMatchObject({});
+  //   });
+  // });
 });

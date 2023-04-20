@@ -71,6 +71,7 @@ export class CardService {
    * @returns the card or null if it doesn't exist
    */
   getCardFromTrunk(user: User, cardId: string): UserCard | null {
+    console.log(cardId);
     return user.trunk.find((card) => card.contentId === cardId) ?? null;
   }
 
@@ -81,7 +82,9 @@ export class CardService {
    * @returns the trunk
    */
   addToTrunk(user: User, cardId: string): UserCard {
+    console.log('before get card from trunk');
     let card = this.getCardFromTrunk(user, cardId);
+    console.log(card);
     if (card) {
       //make sure this actually saves correctly
       ++card.copies;

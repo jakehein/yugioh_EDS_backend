@@ -16,6 +16,12 @@ export class BoosterPackNotFoundException extends Error {
   }
 }
 
+export class BoosterPackIsAlreadyUnlockedException extends Error {
+  constructor(boosterPackId: string) {
+    super(`BoosterPack of id ${boosterPackId} is already unlocked`);
+  }
+}
+
 export class CardNotFoundException extends Error {
   constructor(cardId: string) {
     super(`Card of id ${cardId} was not found`);
@@ -47,6 +53,10 @@ export class ContentInterceptor implements NestInterceptor {
       handleError(
         BoosterPackNotFoundException,
         (err) => new NotFoundException(err.message),
+      ),
+      handleError(
+        BoosterPackIsAlreadyUnlockedException,
+        (err) => new BadRequestException(err.message),
       ),
       handleError(
         CardNotFoundException,

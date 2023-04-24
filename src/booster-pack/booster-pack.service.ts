@@ -124,14 +124,10 @@ export class BoosterPackService {
     const userCards: UserCard[] = [];
     const boosterPack = this.getBoosterPackContent(boosterId);
 
-    console.log('before loop');
     cardData.cardIds.forEach((cardId) => {
-      console.log('inner loop, ', cardId);
       if (!boosterPack.cardIds.includes(cardId)) {
-        console.log('inner loop check, ');
         throw new BoosterPackDoesNotContainCardException(boosterId, cardId);
       }
-      console.log('end of loop: ', userCards);
       userCards.push(this.cardService.addToTrunk(user, cardId));
     });
 

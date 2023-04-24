@@ -21,17 +21,17 @@ export class CardService {
 
   /**
    * Get the card content data
-   * @param cardId cardId of the card being retrieved
+   * @param contentId id of the card being retrieved
    * @returns ICard content data
    */
-  getCardContent(cardId: string): ICard {
+  getCardContent(contentId: string): ICard {
     const card =
       this.contentAccessorService.getContentEntryByIdAndContentTypeOptional(
         'cards',
-        cardId,
+        contentId,
       );
 
-    if (!card) throw new CardNotFoundException(cardId);
+    if (!card) throw new CardNotFoundException(contentId);
 
     return card;
   }
@@ -67,31 +67,30 @@ export class CardService {
   /**
    * Get a card from the trunk
    * @param user user owning the card
-   * @param cardId card being retrieved
+   * @param contentId card being retrieved
    * @returns the card or null if it doesn't exist
    */
-  getCardFromTrunk(user: User, cardId: string): UserCard | null {
-    console.log(cardId);
-    return user.trunk.find((card) => card.contentId === cardId) ?? null;
+  getCardFromTrunk(user: User, contentId: string): UserCard | null {
+    return user.trunk.find((card) => card.contentId === contentId) ?? null;
   }
 
   /**
    * Add a card to the trunk
    * @param user user getting the card
-   * @param cardId cardId being added
+   * @param contentId id being added
    * @returns the trunk
    */
-  addToTrunk(user: User, cardId: string): UserCard {
-    console.log('before get card from trunk');
-    let card = this.getCardFromTrunk(user, cardId);
-    console.log(card);
+  addToTrunk(user: User, contentId: string): UserCard {
+    let card = this.getCardFromTrunk(user, contentId);
     if (card) {
       //make sure this actually saves correctly
       ++card.copies;
-    } else {
+    } else if (this.getCardContent(contentId)) {
       const uuid = this.uuidService.getUuid();
-      card = new UserCard(uuid, cardId, 1);
+      card = new UserCard(uuid, contentId, 1);
       user.trunk.push(card);
+    } else {
+      throw new CardNotFoundException(contentId);
     }
     this.updateBoosterPackCard(user, card);
     return card;
@@ -99,7 +98,7 @@ export class CardService {
 
   /**
    * Add cards to the trunk given a passcode. Note: One passcode
-   * can be linked to multiple cardIds, ex: 'Dark Magician-Dark Magician'
+   * can be linked to multiple contentIds, ex: 'Dark Magician-Dark Magician'
    * and 'Dark Magician-Blue-Eyes White Dragon' both have passcode 46986414
    * @param user user getting the cards
    * @param passcode passcode of the cards being added to the trunk

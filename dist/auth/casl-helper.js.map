@@ -1,0 +1,1 @@
+{"version":3,"file":"casl-helper.js","sourceRoot":"","sources":["../../src/auth/casl-helper.ts"],"names":[],"mappings":";;;AAAA,2CAAoD;AAEpD,qDAAgE;AAEhE,SAAgB,qBAAqB,CACnC,IAAU,EACV,IAAsC;IAEtC,MAAM,OAAO,GAAG,IAAA,iCAAgB,EAAC,IAAI,CAAC,CAAC;IAEvC,IAAI,CAAC,IAAI,CAAC,OAAO,CAAC,EAAE;QAClB,MAAM,IAAI,2BAAkB,EAAE,CAAC;KAChC;AACH,CAAC;AATD,sDASC"}

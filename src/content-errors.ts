@@ -46,6 +46,12 @@ export class CardCopyLimitReachedException extends Error {
   }
 }
 
+export class InvalidDeckException extends Error {
+  constructor(deckId: string, count: number) {
+    super(`Deck with id ${deckId} has ${count} / 40 cards`);
+  }
+}
+
 @Injectable()
 export class ContentInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<unknown> {
@@ -72,6 +78,10 @@ export class ContentInterceptor implements NestInterceptor {
       ),
       handleError(
         CardCopyLimitReachedException,
+        (err) => new BadRequestException(err.message),
+      ),
+      handleError(
+        InvalidDeckException,
         (err) => new BadRequestException(err.message),
       ),
     );

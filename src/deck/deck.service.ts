@@ -8,6 +8,7 @@ import {
   CardCopyLimitReachedException,
   CardNotFoundException,
   ForbiddenCardException,
+  InvalidDeckException,
 } from '../content-errors';
 
 @Injectable()
@@ -23,7 +24,13 @@ export class DeckService {
    * @returns the current deck
    */
   getCurrentDeck(user: User): UserDeck {
-    return user.currentDeck;
+    // might want to return a special base case of empty
+    // for displaying first instance to user?
+    const currentDeck = user.currentDeck;
+    if (currentDeck.cards.length < 40) {
+      throw new InvalidDeckException(currentDeck.id, currentDeck.cards.length);
+    }
+    return currentDeck;
   }
 
   /**
@@ -32,6 +39,7 @@ export class DeckService {
    * @returns the registered decks of the user
    */
   getDecks(user: User): UserDeck[] {
+    //do I want the same sort of error checking here as for current deck?
     return user.decks;
   }
 
@@ -56,8 +64,6 @@ export class DeckService {
 
     deck.cards.forEach((cardContentId) => {
       const cardContent = this.cardService.getCardContent(cardContentId);
-
-      if (!cardContent) throw new CardNotFoundException(cardContentId);
 
       switch (cardContent.cardType) {
         case CardType.Monster:

@@ -16,10 +16,7 @@ import {
   Rarity,
   Status,
 } from './card.interface';
-import {
-  BoosterPackDoesNotContainCardException,
-  CardNotFoundException,
-} from '../content-errors';
+import { CardNotFoundException } from '../content-errors';
 
 describe('CardService', () => {
   let service: CardService;

@@ -16,8 +16,10 @@ function mikroOrmConfigFactory(
 ): MikroOrmModuleOptions {
   const mongoUrl = configService.get<string>(
     'MONGO_URL',
-    'mongodb://root:localdev@localhost:27017/',
+    'mongodb://mongo:27017/',
   );
+
+  console.log(mongoUrl);
 
   return {
     entities: [

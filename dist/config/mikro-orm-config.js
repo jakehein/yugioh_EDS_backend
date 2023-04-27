@@ -6,7 +6,8 @@ const user_schema_1 = require("../user/user.schema");
 const booster_pull_record_schema_1 = require("../analytics/booster-pull-record.schema");
 exports.MIKRO_ORM_CONFIG = Symbol('MIKRO_ORM_CONFIG');
 function mikroOrmConfigFactory(configService) {
-    const mongoUrl = configService.get('MONGO_URL', 'mongodb://root:localdev@localhost:27017/');
+    const mongoUrl = configService.get('MONGO_URL', 'mongodb://mongo:27017/');
+    console.log(mongoUrl);
     return {
         entities: [
             user_schema_1.User,

@@ -1,6 +1,6 @@
 ## Description
 
-This is a project meant to make card tracking, deck building, and general planning easier for the GBA game 'Yu-Gi-Oh! The Eternal Duelist Soul'. Code and tools being used include NestJS and MongoDB for the backend and Angular for the frontend. Why am I making this? For fun, of course!
+This is a project meant to make card tracking, deck building, and general planning easier for the GBA game 'Yu-Gi-Oh! The Eternal Duelist Soul'. Code and tools being used include NestJS and MongoDB for the backend and Angular for the [frontend](https://github.com/jakehein/yugioh_EDS_frontend).
 
 All code is self-written from my experience with NestJS and MongoDB. This project is Open Source, and anyone is free to clone, watch, and fork from this project.
 
@@ -15,6 +15,7 @@ $ npm install
 ### MongoDB
 
 To run this locally, you will need MongoDB 5.0 or higher. You can either install it directly, or via [Docker](https://www.docker.com/products/docker-desktop/).
+Uncomment the code in the docker compose file and run compose up.
 
 ```bash
 # Create and start containers
@@ -100,3 +101,26 @@ nest generate --help
 ## Viewing Swagger
 
 The Swagger docs are loaded at `/api` when running the server.
+
+## Deployed via docker image to Fly.io
+
+This backend is currently deployed on [fly.io](https://fly.io/) using the included Dockerfile image.
+
+```bash
+# install on windows via powershell
+powershell -Command "iwr https://fly.io/install.ps1 -useb | iex"
+
+# sign up or sign in
+fly auth signup
+
+fly auth login
+
+# launch app
+fly launch
+
+# set environment secrets from .env.local
+cat .env.local | fly secrets import
+
+#deploy to fly.io
+fly deploy
+```

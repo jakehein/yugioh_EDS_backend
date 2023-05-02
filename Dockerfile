@@ -1,11 +1,34 @@
-FROM node:alpine
+FROM node:alpine as builder
 
-WORKDIR /usr/src/app
+ENV NODE_ENV build
 
-COPY package*.json .
+USER node
+
+WORKDIR /src
+
+COPY package*.json ./
 
 RUN npm ci
 
-COPY . .
+COPY --chown=node:node . .
 
-CMD [ "npm", "run", "start:prod" ]
+RUN npm run build \
+  && npm prune --production
+
+
+# ---
+
+FROM node:alpine
+
+ENV NODE_ENV production
+
+USER node
+
+WORKDIR /src
+
+COPY --from=builder --chown=node:node /src/package*.json ./
+COPY --from=builder --chown=node:node /src/node_modules/ ./node_modules/
+COPY --from=builder --chown=node:node /src/dist/ ./dist/
+COPY --from=builder --chown=node:node /src/public/ ./public/
+
+CMD ["node", "dist/main.js"]

@@ -19,8 +19,6 @@ function mikroOrmConfigFactory(
     'mongodb://mongo:27017/',
   );
 
-  console.log(mongoUrl);
-
   return {
     entities: [
       User,

@@ -2,32 +2,32 @@ version: '3.8'
 
 services:
   # MongoDB service
-  mongo: 
-    container_name: mongo
-    image: mongo
-    restart: always
-    ports:
-      - 27017:27017
-    volumes:
-      - mongo:/data/db:rw
+  # mongo: 
+  #   container_name: mongo
+  #   image: mongo
+  #   restart: always
+  #   ports:
+  #     - 27017:27017
+  #   volumes:
+  #     - mongo:/data/db:rw
 
   # Node API service
   api:
     build: .
     ports:
-      - "3000:3000"
+      - "8080:8080"
     volumes:
-      - .:/usr/src/app
-    environment:
-      PORT: 3000
-      MongoDB_URI: mongodb://mongo:27017
-      DB_Name: yugioh
-      NAME: production
-    depends_on:
-      - mongo
+      - .:/src
+    # environment:
+    #   PORT: 3000
+    #   MongoDB_URI: mongodb://mongo:27017
+    #   DB_Name: yugioh
+    #   NAME: production
+    # depends_on:
+    #   - mongo
 
 volumes:
-  mongo: {}
+  #mongo: {}
 
 # version: '3.8'
 

@@ -7,7 +7,7 @@ export const CONTENT_DATA = Symbol('CONTENT_DATA');
 export const contentDataProvider: FactoryProvider<Promise<IContent>> = {
   provide: CONTENT_DATA,
   async useFactory() {
-    const contentDataString = await readFile('src/content/content.json', {
+    const contentDataString = await readFile('public/content.json', {
       encoding: 'utf-8',
     });
 
